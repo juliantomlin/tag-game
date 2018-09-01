@@ -10,8 +10,6 @@ or manually
 > node index.js
 ```
 
-# Structure
-
 # Preview
 > Now open http://localhost:3000 There's black canvas and a single doggy sprite. That's all.
 
