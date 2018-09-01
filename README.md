@@ -1,6 +1,7 @@
 # phaser-express-boilerplate
 
 # Get Started
+> express serves static HTML, CSS and JS files.
 ```terminal
 > npm start
 ```
@@ -8,6 +9,8 @@ or manually
 ```terminal
 > node index.js
 ```
+
+# Structure
 
 # Preview
 > Now open http://localhost:3000 There's black canvas and a single doggy sprite. That's all.
