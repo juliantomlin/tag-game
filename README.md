@@ -10,3 +10,4 @@ or manually
 ```
 
 # Preview
+![preview_image](https://i.imgur.com/oJoHDM0.png)
