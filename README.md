@@ -32,13 +32,13 @@ or manually
 ```
 
 - `assets/doggy.png`
-  > An image file to render on canvas
+: An image file to render on canvas
 - `index.html`
-  > Draws phaser game
+: Draws phaser game
 - `index.js`
-  > Express server code
+: Express server code
 - `js/game.js`
-  > Phaser game code
+: Phaser game code
 
 # Preview
 
