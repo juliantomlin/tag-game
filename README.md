@@ -24,4 +24,4 @@ or manually
 
 > Now open http://localhost:3000 There's black canvas and a single doggy sprite. That's all.
 
-![preview_image](https://i.imgur.com/oJoHDM0.png)
+![preview_image](https://i.imgur.com/GGPkXHR.png)
