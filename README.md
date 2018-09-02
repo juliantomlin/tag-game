@@ -31,14 +31,14 @@ or manually
     └── game.js
 ```
 
-- assets/doggy.png
-  An image file to render on canvas
-- index.html
-  Draws phaser game
-- index.js
-  Express server code
-- js/game.js
-  Phaser game code
+- `assets/doggy.png`
+  > An image file to render on canvas
+- `index.html`
+  > Draws phaser game
+- `index.js`
+  > Express server code
+- `js/game.js`
+  > Phaser game code
 
 # Preview
 
