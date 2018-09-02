@@ -1,5 +1,3 @@
-# phaser-express-boilerplate
-
 # Get Started
 
 > Install dependencies.
