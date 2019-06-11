@@ -11,12 +11,16 @@ class StartScene extends Phaser.Scene {
     this.load.image("ground", "assets/ground.png")
     this.load.image("ball", "assets/ball.svg")
     this.load.image("wall", "assets/wall_tile.svg")
+    this.load.image("window", "assets/window.svg")
   }
 
   create() {
     this.background = this.add.image(0,0, 'ground').setOrigin(0, 0)
     this.player = this.physics.add.sprite(50, 350, "ball").setScale(.3,.3)
     this.player.body.collideWorldBounds = true
+
+    this.window = this.physics.add.staticGroup()
+    this.window.create(590, 140, "window").setScale(.15, .4).refreshBody()
 
     this.walls = this.physics.add.staticGroup()
     this.walls.create(460, 100, "wall").setScale(1.8, .1).refreshBody() //top wall
