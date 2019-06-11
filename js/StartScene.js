@@ -56,7 +56,7 @@ class StartScene extends Phaser.Scene {
       }
       this.physics.moveToObject(this.player, target, vaultSpeed)
       if ( this.player.body.x > target.x - 40){
-        this.windows = this.physics.add.collider(this.player, this.walls)
+        this.windows = this.physics.add.collider(this.player, this.walls, this.killMomentum, null, this)
         this.vault = null
       }
     }
@@ -70,7 +70,7 @@ class StartScene extends Phaser.Scene {
       }
       this.physics.moveToObject(this.player, target, vaultSpeed)
       if ( this.player.body.x < target.x - 5){
-        this.windows = this.physics.add.collider(this.player, this.walls)
+        this.windows = this.physics.add.collider(this.player, this.walls, this.killMomentum, null, this)
         this.vault = null
       }
     }
@@ -84,7 +84,7 @@ class StartScene extends Phaser.Scene {
       }
       this.physics.moveToObject(this.player, target, vaultSpeed)
       if ( this.player.body.x > target.x - 40){
-        this.windows = this.physics.add.collider(this.player, this.walls)
+        this.windows = this.physics.add.collider(this.player, this.walls, this.killMomentum, null, this)
         this.vault = null
       }
     }
@@ -98,7 +98,7 @@ class StartScene extends Phaser.Scene {
       }
       this.physics.moveToObject(this.player, target, vaultSpeed)
       if ( this.player.body.x < target.x - 5){
-        this.windows = this.physics.add.collider(this.player, this.walls)
+        this.windows = this.physics.add.collider(this.player, this.walls, this.killMomentum, null, this)
         this.vault = null
       }
     }
