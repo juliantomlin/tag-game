@@ -19,7 +19,7 @@ Client.sendClick = function(x,y){
 
 Client.socket.on('newplayer',function(data){
     //this.player = this.physics.add.sprite(50, 350, "ball").setScale(.3,.3)
-    StartScene.addNewPlayer(data.id,data.x,data.y);
+    StartScene2.addNewPlayer(data.id,data.x,data.y);
 });
 
 Client.socket.on('allplayers',function(data){
@@ -32,10 +32,10 @@ Client.socket.on('allplayers',function(data){
     }
 
     Client.socket.on('move',function(data){
-        StartScene.movePlayer(data.id,data.x,data.y);
+        StartScene2.movePlayer(data.id,data.x,data.y);
     });
 
     Client.socket.on('remove',function(id){
-        StartScene.removePlayer(id);
+        StartScene2.removePlayer(id);
     });
 });
