@@ -47,8 +47,13 @@ class StartScene extends Phaser.Scene {
 
     this.addNewPlayer = function(id, x, y) {
       console.log("adding new player")
-      this.player.user = this.physics.add.sprite(x, y, "ball").setScale(.3,.3)
+      this.player[id] = this.physics.add.sprite(x, y, "ball").setScale(.3,.3)
       this.playerId = id
+    }
+
+    this.removePlayer = function(id){
+      this.player[id].destroy();
+      delete this.playerMap[id];
     }
 
     console.log("creating player")
