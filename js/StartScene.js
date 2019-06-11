@@ -26,12 +26,19 @@ class StartScene extends Phaser.Scene {
     this.walls.create(280, 360, "wall").setScale(.1, 2).refreshBody() //T shaft bottom
 
 
-    this.windows = this.physics.add.collider(this.player, this.walls);
+    this.windows = this.physics.add.collider(this.player, this.walls, this.killMomentum, null, this)
     this.cursors = this.input.keyboard.createCursorKeys()
     this.space = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
     this.vault = null
     this.momentumLeft = 0
     this.momentumRight = 0
+    this.stopped = false
+  }
+
+  killMomentum () {
+    this.momentumLeft = 0
+    this.momentumRight = 0
+    console.log('bonk')
   }
 
   update(delta){
@@ -124,11 +131,19 @@ class StartScene extends Phaser.Scene {
         this.player.body.setVelocityX(-survivorSpeed)
         this.momentumRight = 0
         this.momentumLeft += 1
+        if (this.stopped){
+          this.momentumLeft = 0
+        }
       } else if (this.cursors.right.isDown && !this.cursors.left.isDown) {
         this.player.body.setVelocityX(survivorSpeed)
         this.momentumLeft = 0
         this.momentumRight += 1
       } else {
+        this.momentumLeft = 0
+        this.momentumRight = 0
+      }
+
+      if (this.stopped) {
         this.momentumLeft = 0
         this.momentumRight = 0
       }
