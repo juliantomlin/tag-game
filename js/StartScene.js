@@ -18,6 +18,7 @@ class StartScene extends Phaser.Scene {
     this.background = this.add.image(0,0, 'ground').setOrigin(0, 0)
 
     //this.player = this.physics.add.sprite(50, 350, "ball").setScale(.3,.3)
+    this.windows = {}
     this.player = {}
     this.playerId =''
 
@@ -43,13 +44,14 @@ class StartScene extends Phaser.Scene {
     this.momentumRight = 0
     this.stopped = false
 
-    this.addNewPlayer = function(id, x, y) {
+    this.addNewPlayer = function(id, x, y, user) {
       console.log("adding new player")
       this.player[id] = this.physics.add.sprite(x, y, "ball").setScale(.3,.3)
       this.player[id].body.collideWorldBounds = true
-      this.windows = this.physics.add.collider(this.player[id], this.walls, this.killMomentum, null, this)
-
-      this.playerId = id
+      this.windows[id] = this.physics.add.collider(this.player[id], this.walls, this.killMomentum, null, this)
+      if (user) {
+        this.playerId = id
+      }
     }
 
     this.removePlayer = function(id){
@@ -80,7 +82,7 @@ class StartScene extends Phaser.Scene {
       }
 
       if (this.vault === 1) {
-        this.physics.world.removeCollider(this.windows)
+        this.physics.world.removeCollider(this.windows[this.playerId])
         let target = {x: 350, y:470}
         let vaultSpeed = survivorSpeed
         if (this.momentumRight <= fast_vault_req) {
@@ -88,13 +90,13 @@ class StartScene extends Phaser.Scene {
         }
         this.physics.moveToObject(this.player[this.playerId], target, vaultSpeed)
         if ( this.player[this.playerId].body.x > target.x - 40){
-          this.windows = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
+          this.windows[this.playerId] = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
           this.vault = null
         }
       }
 
       if (this.vault === 2) {
-        this.physics.world.removeCollider(this.windows)
+        this.physics.world.removeCollider(this.windows[this.playerId])
         let target = {x: 210, y:470}
         let vaultSpeed = survivorSpeed
         if (this.momentumLeft <= fast_vault_req) {
@@ -102,13 +104,13 @@ class StartScene extends Phaser.Scene {
         }
         this.physics.moveToObject(this.player[this.playerId], target, vaultSpeed)
         if ( this.player[this.playerId].body.x < target.x - 5){
-          this.windows = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
+          this.windows[this.playerId] = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
           this.vault = null
         }
       }
 
       if (this.vault === 3) {
-        this.physics.world.removeCollider(this.windows)
+        this.physics.world.removeCollider(this.windows[this.playerId])
         let target = {x: 660, y:140}
         let vaultSpeed = survivorSpeed
         if (this.momentumRight <= fast_vault_req) {
@@ -116,13 +118,13 @@ class StartScene extends Phaser.Scene {
         }
         this.physics.moveToObject(this.player[this.playerId], target, vaultSpeed)
         if ( this.player[this.playerId].body.x > target.x - 40){
-          this.windows = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
+          this.windows[this.playerId] = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
           this.vault = null
         }
       }
 
       if (this.vault === 4) {
-        this.physics.world.removeCollider(this.windows)
+        this.physics.world.removeCollider(this.windows[this.playerId])
         let target = {x: 520, y:140}
         let vaultSpeed = survivorSpeed
         if (this.momentumLeft <= fast_vault_req) {
@@ -130,7 +132,7 @@ class StartScene extends Phaser.Scene {
         }
         this.physics.moveToObject(this.player[this.playerId], target, vaultSpeed)
         if ( this.player[this.playerId].body.x < target.x - 5){
-          this.windows = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
+          this.windows[this.playerId] = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
           this.vault = null
         }
       }

@@ -19,7 +19,7 @@ Client.sendClick = function(x,y){
 
 Client.socket.on('newplayer',function(data){
     //this.player = this.physics.add.sprite(50, 350, "ball").setScale(.3,.3)
-    StartScene2.addNewPlayer(data.id,data.x,data.y);
+    StartScene2.addNewPlayer(data.id,data.x,data.y, false);
 });
 
 Client.socket.on('allplayers',function(data){
@@ -28,7 +28,11 @@ Client.socket.on('allplayers',function(data){
     for(var i = 0; i < data.length; i++){
       // const test = new StartScene
       // console.log(test)
-        StartScene2.addNewPlayer(data[i].id,data[i].x,data[i].y);
+      let user = false
+      if (i === data.length - 1) {
+        user = true
+      }
+      StartScene2.addNewPlayer(data[i].id,data[i].x,data[i].y, user);
     }
 
     Client.socket.on('move',function(data){
