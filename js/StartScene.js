@@ -10,6 +10,7 @@ class StartScene extends Phaser.Scene {
   preload(){
     this.load.image("ground", "assets/ground.png")
     this.load.image("ball", "assets/ball.svg")
+    this.load.image("it", "assets/it.svg")
     this.load.image("wall", "assets/wall_tile.svg")
     this.load.image("window", "assets/window.svg")
   }
@@ -21,6 +22,7 @@ class StartScene extends Phaser.Scene {
     this.windows = {}
     this.player = {}
     this.playerId =''
+    this.itChosen = false
 
     this.window = this.physics.add.staticGroup()
     this.window.create(590, 140, "window").setScale(.15, .4).refreshBody()
@@ -40,13 +42,21 @@ class StartScene extends Phaser.Scene {
     this.testKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
 
     this.vault = null
+    this.lundge = 0
     this.momentumLeft = 0
     this.momentumRight = 0
     this.stopped = false
 
     this.addNewPlayer = function(id, x, y, user) {
-      console.log("adding new player")
-      this.player[id] = this.physics.add.sprite(x, y, "ball").setScale(.3,.3)
+      console.log(this.player)
+      if (!this.itChosen) {
+        this.player[id] = this.physics.add.sprite(x, y, "it").setScale(.4,.4)
+        this.player[id].it = true
+        this.itChosen = true
+      }else{
+        this.player[id] = this.physics.add.sprite(x, y, "ball").setScale(.3,.3)
+        this.player[id].it = false
+      }
       this.player[id].body.collideWorldBounds = true
       this.windows[id] = this.physics.add.collider(this.player[id], this.walls, this.killMomentum, null, this)
       if (user) {
@@ -142,7 +152,7 @@ class StartScene extends Phaser.Scene {
         }
       }
 
-      if (!this.vault){
+      if (!this.vault && !this.player[this.playerId].it){
 
         if (this.space.isDown && this.player[this.playerId].body.x > 170 && this.player[this.playerId].body.x < 280 && this.player[this.playerId].body.y < 510 && this.player[this.playerId].body.y > 430) {
           this.vault = 1
@@ -184,6 +194,45 @@ class StartScene extends Phaser.Scene {
 
 
       this.player[this.playerId].body.velocity.normalize().scale(survivorSpeed)
+      }
+
+      if (this.player[this.playerId].it) {
+
+        if (this.space.isDown && this.lundge <=0) {
+          this.lundge = 60
+        }
+
+        if (this.cursors.up.isDown) {
+          this.player[this.playerId].body.setVelocityY(-survivorSpeed*1.15)
+        } else if (this.cursors.down.isDown) {
+          this.player[this.playerId].body.setVelocityY(survivorSpeed*1.15)
+        }
+
+        if (this.cursors.left.isDown && !this.cursors.right.isDown) {
+          this.player[this.playerId].body.setVelocityX(-survivorSpeed*1.15)
+          this.momentumRight = 0
+          this.momentumLeft += 1
+          if (this.stopped){
+            this.momentumLeft = 0
+          }
+        } else if (this.cursors.right.isDown && !this.cursors.left.isDown) {
+          this.player[this.playerId].body.setVelocityX(survivorSpeed*1.15)
+          this.momentumLeft = 0
+          this.momentumRight += 1
+        } else {
+          this.momentumLeft = 0
+          this.momentumRight = 0
+        }
+        if (this.lundge > 40) {
+          this.player[this.playerId].body.velocity.normalize().scale(survivorSpeed*1.725)
+          this.lundge --
+        } else if (this.lundge > 0){
+          this.player[this.playerId].body.velocity.normalize().scale(survivorSpeed*.2)
+          this.lundge --
+        } else {
+          this.player[this.playerId].body.velocity.normalize().scale(survivorSpeed*1.15)
+        }
+
       }
 
 
