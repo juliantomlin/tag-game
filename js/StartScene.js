@@ -54,6 +54,12 @@ class StartScene extends Phaser.Scene {
       }
     }
 
+    this.movePlayer = function(id,x,y) {
+      if (id != this.playerId) {
+        this.player[id].setPosition(x+25,y+25)
+      }
+    }
+
     this.removePlayer = function(id){
       this.player[id].destroy();
       delete this.playerMap[id];
@@ -73,7 +79,6 @@ class StartScene extends Phaser.Scene {
 
     if (this.playerId && this.player[this.playerId]) {
 
-      console.log('player controlls', this.player[this.playerId], this.player, this.playerId)
       this.player[this.playerId].body.setVelocity(0)
 
       if (this.testKey.isDown) {
@@ -182,6 +187,7 @@ class StartScene extends Phaser.Scene {
       }
 
 
+    Client.sendPosition(this.player[this.playerId].body.x, this.player[this.playerId].body.y)
     }
   }
 }

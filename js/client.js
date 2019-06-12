@@ -13,9 +13,10 @@ Client.askNewPlayer = function(){
     Client.socket.emit('newplayer');
 };
 
-Client.sendClick = function(x,y){
-  Client.socket.emit('click',{x:x,y:y});
+Client.sendPosition = function(x,y){
+  Client.socket.emit('move',{x:x,y:y});
 };
+
 
 Client.socket.on('newplayer',function(data){
     //this.player = this.physics.add.sprite(50, 350, "ball").setScale(.3,.3)
@@ -23,8 +24,6 @@ Client.socket.on('newplayer',function(data){
 });
 
 Client.socket.on('allplayers',function(data){
-  console.log('newplayer data received')
-  console.log('client.js', game)
     for(var i = 0; i < data.length; i++){
       // const test = new StartScene
       // console.log(test)
@@ -35,11 +34,12 @@ Client.socket.on('allplayers',function(data){
       StartScene2.addNewPlayer(data[i].id,data[i].x,data[i].y, user);
     }
 
-    Client.socket.on('move',function(data){
-        StartScene2.movePlayer(data.id,data.x,data.y);
-    });
+  Client.socket.on('move',function(data){
+      StartScene2.movePlayer(data.id,data.x,data.y);
+  });
 
-    Client.socket.on('remove',function(id){
-        StartScene2.removePlayer(id);
-    });
+  Client.socket.on('remove',function(id){
+      StartScene2.removePlayer(id);
+  });
 });
+
