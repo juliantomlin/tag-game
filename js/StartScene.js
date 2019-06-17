@@ -1,6 +1,6 @@
-const survivorSpeed = 200
+const survivorSpeed = 250
 const fast_vault_req = 25
-const slow_vault_pen = .6
+const slow_vault_pen = .5
 
 class StartScene extends Phaser.Scene {
   constructor() {
@@ -199,7 +199,7 @@ class StartScene extends Phaser.Scene {
       if (this.player[this.playerId].it) {
 
         if (this.space.isDown && this.lundge <=0) {
-          this.lundge = 60
+          this.lundge = 80
         }
 
         if (this.cursors.up.isDown) {
@@ -223,11 +223,11 @@ class StartScene extends Phaser.Scene {
           this.momentumLeft = 0
           this.momentumRight = 0
         }
-        if (this.lundge > 40) {
+        if (this.lundge > 60) {
           this.player[this.playerId].body.velocity.normalize().scale(survivorSpeed*1.725)
           this.lundge --
         } else if (this.lundge > 0){
-          this.player[this.playerId].body.velocity.normalize().scale(survivorSpeed*.2)
+          this.player[this.playerId].body.velocity.normalize().scale(survivorSpeed*.3)
           this.lundge --
         } else {
           this.player[this.playerId].body.velocity.normalize().scale(survivorSpeed*1.15)
