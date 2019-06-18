@@ -20,6 +20,7 @@ class StartScene extends Phaser.Scene {
 
     //this.player = this.physics.add.sprite(50, 350, "ball").setScale(.3,.3)
     this.windows = {}
+    this.playerCollision = {}
     this.player = {}
     this.playerId =''
     this.itChosen = false
@@ -46,6 +47,7 @@ class StartScene extends Phaser.Scene {
     this.momentumLeft = 0
     this.momentumRight = 0
     this.stopped = false
+    this.damageBoost = 0
 
     this.addNewPlayer = function(id, x, y, user) {
       console.log(this.player)
@@ -57,8 +59,13 @@ class StartScene extends Phaser.Scene {
         this.player[id] = this.physics.add.sprite(x, y, "ball").setScale(.3,.3)
         this.player[id].it = false
       }
+      this.player[id].id = id
       this.player[id].body.collideWorldBounds = true
       this.windows[id] = this.physics.add.collider(this.player[id], this.walls, this.killMomentum, null, this)
+      this.playerCollision[id] = []
+      for (let char in this.player) {
+        this.playerCollision[id].push(this.physics.add.collider(this.player[id], this.player[char], this.killMomentum, null, this))
+      }
       if (user) {
         this.playerId = id
       }
@@ -75,15 +82,33 @@ class StartScene extends Phaser.Scene {
       delete this.playerMap[id];
     }
 
+    this.receiveDamage = function(id) {
+      if (this.playerId === id) {
+        this.damageBoost = 180
+      }
+    }
+
     console.log("creating player")
     Client.askNewPlayer()
   }
 
-  killMomentum () {
+  killMomentum (player1, player2) {
     this.momentumLeft = 0
     this.momentumRight = 0
-    console.log('bonk')
+    if (player1.texture.key != "wall" && player2.texture.key != "wall"){
+      this.collideDuringVault = true
+    }
+    if (this.lundge > 60) {
+      console.log("SMACK")
+      this.lundge = 60
+      if (player1.it){
+        Client.hitConfirm(player2.id)
+      } else if (player2.it) {
+        Client.hitConfirm(player1.id)
+      }
+    }
   }
+
 
   update(delta){
 
@@ -108,6 +133,10 @@ class StartScene extends Phaser.Scene {
           this.windows[this.playerId] = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
           this.vault = null
         }
+        if (this.collideDuringVault && (this.player[this.playerId].body.x < target.x - 40)) {
+          this.windows[this.playerId] = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
+          this.vault = null
+        }
       }
 
       if (this.vault === 2) {
@@ -119,6 +148,10 @@ class StartScene extends Phaser.Scene {
         }
         this.physics.moveToObject(this.player[this.playerId], target, vaultSpeed)
         if ( this.player[this.playerId].body.x < target.x - 5){
+          this.windows[this.playerId] = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
+          this.vault = null
+        }
+        if (this.collideDuringVault && (this.player[this.playerId].body.x > target.x - 5)) {
           this.windows[this.playerId] = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
           this.vault = null
         }
@@ -136,6 +169,10 @@ class StartScene extends Phaser.Scene {
           this.windows[this.playerId] = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
           this.vault = null
         }
+        if (this.collideDuringVault && (this.player[this.playerId].body.x < target.x - 40)) {
+          this.windows[this.playerId] = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
+          this.vault = null
+        }
       }
 
       if (this.vault === 4) {
@@ -150,24 +187,34 @@ class StartScene extends Phaser.Scene {
           this.windows[this.playerId] = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
           this.vault = null
         }
+        if (this.collideDuringVault && (this.player[this.playerId].body.x > target.x - 5)) {
+          this.windows[this.playerId] = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
+          this.vault = null
+        }
       }
 
       if (!this.vault && !this.player[this.playerId].it){
 
-        if (this.space.isDown && this.player[this.playerId].body.x > 170 && this.player[this.playerId].body.x < 280 && this.player[this.playerId].body.y < 510 && this.player[this.playerId].body.y > 430) {
+        if (this.space.isDown && this.player[this.playerId].body.x > 170 && this.player[this.playerId].body.x < 280 && this.player[this.playerId].body.y < 485 && this.player[this.playerId].body.y > 405) {
           this.vault = 1
+          this.collideDuringVault = false
+
         }
 
-        if (this.space.isDown && this.player[this.playerId].body.x < 390 && this.player[this.playerId].body.x > 280 && this.player[this.playerId].body.y < 510 && this.player[this.playerId].body.y > 430) {
+        if (this.space.isDown && this.player[this.playerId].body.x < 390 && this.player[this.playerId].body.x > 280 && this.player[this.playerId].body.y < 485 && this.player[this.playerId].body.y > 405) {
           this.vault = 2
+          this.collideDuringVault = false
+
         }
 
-        if (this.space.isDown && this.player[this.playerId].body.x > 480 && this.player[this.playerId].body.x < 590 && this.player[this.playerId].body.y < 180 && this.player[this.playerId].body.y > 100) {
+        if (this.space.isDown && this.player[this.playerId].body.x > 480 && this.player[this.playerId].body.x < 590 && this.player[this.playerId].body.y < 155 && this.player[this.playerId].body.y > 75) {
           this.vault = 3
+          this.collideDuringVault = false
         }
 
-        if (this.space.isDown && this.player[this.playerId].body.x < 700 && this.player[this.playerId].body.x > 590 && this.player[this.playerId].body.y < 180 && this.player[this.playerId].body.y > 100) {
+        if (this.space.isDown && this.player[this.playerId].body.x < 700 && this.player[this.playerId].body.x > 590 && this.player[this.playerId].body.y < 155 && this.player[this.playerId].body.y > 75) {
           this.vault = 4
+          this.collideDuringVault = false
         }
 
         if (this.cursors.up.isDown) {
@@ -192,8 +239,13 @@ class StartScene extends Phaser.Scene {
           this.momentumRight = 0
         }
 
-
-      this.player[this.playerId].body.velocity.normalize().scale(survivorSpeed)
+        if (this.damageBoost > 0) {
+          this.player[this.playerId].body.velocity.normalize().scale(survivorSpeed * 1.5)
+          this.damageBoost --
+          console.log(this.damageBoost)
+        } else {
+          this.player[this.playerId].body.velocity.normalize().scale(survivorSpeed)
+        }
       }
 
       if (this.player[this.playerId].it) {

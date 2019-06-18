@@ -17,6 +17,15 @@ Client.sendPosition = function(x,y){
   Client.socket.emit('move',{x:x,y:y});
 };
 
+Client.hitConfirm = function(id) {
+  console.log('did hit confirm happen')
+  Client.socket.emit('playerHit', id)
+}
+
+Client.socket.on('hitConfirm', function(data){
+  StartScene2.receiveDamage(data)
+})
+
 
 Client.socket.on('newplayer',function(data){
     //this.player = this.physics.add.sprite(50, 350, "ball").setScale(.3,.3)

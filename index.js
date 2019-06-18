@@ -33,6 +33,10 @@ io.on('connection',function(socket){
             io.emit('move',socket.player);
         });
 
+        socket.on('playerHit', function(data){
+            io.emit('hitConfirm', data)
+        })
+
         socket.on('disconnect',function(){
             io.emit('remove',socket.player.id);
         });
