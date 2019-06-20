@@ -25,7 +25,7 @@ class StartScene extends Phaser.Scene {
     this.playerId =''
     this.itChosen = false
     this.vision = this.add.graphics(0,0)
-    console.log(this.vision)
+    this.mask
 
     this.window = this.physics.add.staticGroup()
     this.window.create(590, 140, "window").setScale(.15, .4).refreshBody()
@@ -51,8 +51,13 @@ class StartScene extends Phaser.Scene {
     this.stopped = false
     this.damageBoost = 0
 
+    if (this.player) {
+      for (const existingPlayer in this.player) {
+        this.player[existingPlayer].setMask(this.mask)
+      }
+    }
+
     this.addNewPlayer = function(id, x, y, user) {
-      console.log(this.player)
       if (!this.itChosen) {
         this.player[id] = this.physics.add.sprite(x, y, "it").setScale(.4,.4)
         this.player[id].it = true
@@ -61,6 +66,7 @@ class StartScene extends Phaser.Scene {
         this.player[id] = this.physics.add.sprite(x, y, "ball").setScale(.3,.3)
         this.player[id].it = false
       }
+      this.player[id].setMask(this.mask)
       this.player[id].id = id
       this.player[id].body.collideWorldBounds = true
       this.windows[id] = this.physics.add.collider(this.player[id], this.walls, this.killMomentum, null, this)
@@ -296,14 +302,16 @@ class StartScene extends Phaser.Scene {
 
     this.vision.clear();
     this.vision.lineStyle(2, 0xff8800, 1)
+    this.vision.fillStyle(0xffff00, .1)
     this.vision.beginPath();
     this.vision.moveTo(visibility[0][0],visibility[0][1])
     for(var i=1; i<=visibility.length; i++){
       this.vision.lineTo(visibility[i%visibility.length][0],visibility[i%visibility.length][1])
     }
     this.vision.closePath()
-    this.vision.strokePath()
-    console.log(visibility)
+    //this.vision.strokePath()
+    this.vision.fillPath()
+    this.mask = this.vision.createGeometryMask()
     }
   }
 }
