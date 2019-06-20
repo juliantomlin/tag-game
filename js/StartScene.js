@@ -25,7 +25,7 @@ class StartScene extends Phaser.Scene {
     this.playerId =''
     this.itChosen = false
     this.vision = this.add.graphics(0,0)
-    this.mask
+    this.mask = this.vision.createGeometryMask()
 
     this.window = this.physics.add.staticGroup()
     this.window.create(590, 140, "window").setScale(.15, .4).refreshBody()
@@ -52,7 +52,9 @@ class StartScene extends Phaser.Scene {
     this.damageBoost = 0
 
     if (this.player) {
+      console.log('masking old player')
       for (const existingPlayer in this.player) {
+        console.log(this.player[existingPlayer])
         this.player[existingPlayer].setMask(this.mask)
       }
     }
@@ -297,12 +299,12 @@ class StartScene extends Phaser.Scene {
 
 
     Client.sendPosition(this.player[this.playerId].body.x, this.player[this.playerId].body.y)
-    let visibility = VisibilityPolygon.compute([this.player[this.playerId].body.x+25, this.player[this.playerId].body.y+25], [[[0,0],[800,0]],[[800,0],[800,600]],[[800,600],[0,600]],[[0,600],[0,0]],[[280,210],[280,510]],[[130,510],[280,510]],[[280,510],[430,510]],[[330,100],[595,100]],[[595,100],[595,390]]])
+    let visibility = VisibilityPolygon.compute([this.player[this.playerId].body.x+25, this.player[this.playerId].body.y+25], [[[0,0],[800,0]],[[800,0],[800,600]],[[800,600],[0,600]],[[0,600],[0,0]],[[280,210],[280,440]],[[130,510],[280,510]],[[280,510],[430,510]],[[330,100],[595,100]],[[595,170],[595,390]]])
 
 
     this.vision.clear();
     this.vision.lineStyle(2, 0xff8800, 1)
-    this.vision.fillStyle(0xffff00, .1)
+    this.vision.fillStyle(0xffff00, .05)
     this.vision.beginPath();
     this.vision.moveTo(visibility[0][0],visibility[0][1])
     for(var i=1; i<=visibility.length; i++){
@@ -311,7 +313,6 @@ class StartScene extends Phaser.Scene {
     this.vision.closePath()
     //this.vision.strokePath()
     this.vision.fillPath()
-    this.mask = this.vision.createGeometryMask()
     }
   }
 }
