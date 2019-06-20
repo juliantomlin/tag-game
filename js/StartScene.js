@@ -64,9 +64,11 @@ class StartScene extends Phaser.Scene {
         this.player[id] = this.physics.add.sprite(x, y, "it").setScale(.4,.4)
         this.player[id].it = true
         this.itChosen = true
+        this.player[id].setCircle(75)
       }else{
         this.player[id] = this.physics.add.sprite(x, y, "ball").setScale(.3,.3)
         this.player[id].it = false
+        this.player[id].setCircle(75)
       }
       this.player[id].setMask(this.mask)
       this.player[id].id = id
@@ -96,6 +98,14 @@ class StartScene extends Phaser.Scene {
       if (this.playerId === id) {
         this.damageBoost = 180
       }
+      this.player[id].setTintFill(0xffffff)
+      setTimeout(() => this.player[id].clearTint(), 150)
+      setTimeout(() => this.player[id].setTintFill(0xffffff), 300)
+      setTimeout(() => this.player[id].clearTint(), 450)
+      setTimeout(() => this.player[id].setTintFill(0xffffff), 600)
+      setTimeout(() => this.player[id].clearTint(), 900)
+
+
     }
 
     console.log("creating player")
