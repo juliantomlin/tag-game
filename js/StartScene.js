@@ -117,14 +117,14 @@ class StartScene extends Phaser.Scene {
     this.momentumRight = 0
     if (player1.texture.key != "wall" && player2.texture.key != "wall"){
       this.collideDuringVault = true
-    }
-    if (this.lundge > 60) {
-      console.log("SMACK")
-      this.lundge = 60
-      if (player1.it){
-        Client.hitConfirm(player2.id)
-      } else if (player2.it) {
-        Client.hitConfirm(player1.id)
+      if (this.lundge > 60) {
+        console.log("SMACK")
+        this.lundge = 60
+        if (player1.it){
+          Client.hitConfirm(player2.id)
+        } else if (player2.it) {
+          Client.hitConfirm(player1.id)
+        }
       }
     }
   }
