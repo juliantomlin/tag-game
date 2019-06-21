@@ -16,7 +16,9 @@ class StartScene extends Phaser.Scene {
   }
 
   create() {
-    this.background = this.add.image(0,0, 'ground').setOrigin(0, 0)
+    this.background = this.add.tileSprite(0,0,1600,1200, 'ground').setOrigin(0, 0)
+    this.cameras.main.setBounds(-400, -400, 2000, 2000)
+    this.physics.world.setBounds(0, 0, 2000, 2000)
 
     //this.player = this.physics.add.sprite(50, 350, "ball").setScale(.3,.3)
     this.windows = {}
@@ -80,6 +82,7 @@ class StartScene extends Phaser.Scene {
       }
       if (user) {
         this.playerId = id
+        this.cameras.main.startFollow(this.player[this.playerId], true, 0.08, 0.08)
       }
     }
 
