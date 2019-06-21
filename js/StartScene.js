@@ -156,73 +156,100 @@ class StartScene extends Phaser.Scene {
 
       }
 
-      if (this.vault === 1) {
-        this.physics.world.removeCollider(this.windows[this.playerId])
-        let target = {x: 350, y:470}
-        let vaultSpeed = survivorSpeed
-        if (this.momentumRight <= fast_vault_req) {
-          vaultSpeed = survivorSpeed * slow_vault_pen
-        }
-        this.physics.moveToObject(this.player[this.playerId], target, vaultSpeed)
-        if ( this.player[this.playerId].body.x > target.x - 40){
-          this.windows[this.playerId] = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
-          this.vault = null
-        }
-        if (this.collideDuringVault && (this.player[this.playerId].body.x < target.x - 40)) {
-          this.windows[this.playerId] = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
-          this.vault = null
-        }
-      }
 
-      if (this.vault === 2) {
-        this.physics.world.removeCollider(this.windows[this.playerId])
-        let target = {x: 210, y:470}
-        let vaultSpeed = survivorSpeed
-        if (this.momentumLeft <= fast_vault_req) {
-          vaultSpeed = survivorSpeed * slow_vault_pen
-        }
-        this.physics.moveToObject(this.player[this.playerId], target, vaultSpeed)
-        if ( this.player[this.playerId].body.x < target.x - 5){
-          this.windows[this.playerId] = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
-          this.vault = null
-        }
-        if (this.collideDuringVault && (this.player[this.playerId].body.x > target.x - 5)) {
-          this.windows[this.playerId] = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
-          this.vault = null
-        }
-      }
+      // if (this.vault === 1) {
+      //   this.physics.world.removeCollider(this.windows[this.playerId])
+      //   let target = {x: 350, y:470}
+      //   let vaultSpeed = survivorSpeed
+      //   if (this.momentumRight <= fast_vault_req) {
+      //     vaultSpeed = survivorSpeed * slow_vault_pen
+      //   }
+      //   this.physics.moveToObject(this.player[this.playerId], target, vaultSpeed)
+      //   if ( this.player[this.playerId].body.x > target.x - 40){
+      //     this.windows[this.playerId] = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
+      //     this.vault = null
+      //   }
+      //   if (this.collideDuringVault && (this.player[this.playerId].body.x < target.x - 40)) {
+      //     this.windows[this.playerId] = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
+      //     this.vault = null
+      //   }
+      // }
 
-      if (this.vault === 3) {
-        this.physics.world.removeCollider(this.windows[this.playerId])
-        let target = {x: 660, y:140}
-        let vaultSpeed = survivorSpeed
-        if (this.momentumRight <= fast_vault_req) {
-          vaultSpeed = survivorSpeed * slow_vault_pen
-        }
-        this.physics.moveToObject(this.player[this.playerId], target, vaultSpeed)
-        if ( this.player[this.playerId].body.x > target.x - 40){
-          this.windows[this.playerId] = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
-          this.vault = null
-        }
-        if (this.collideDuringVault && (this.player[this.playerId].body.x < target.x - 40)) {
-          this.windows[this.playerId] = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
-          this.vault = null
-        }
-      }
+      // if (this.vault === 2) {
+      //   this.physics.world.removeCollider(this.windows[this.playerId])
+      //   let target = {x: 210, y:470}
+      //   let vaultSpeed = survivorSpeed
+      //   if (this.momentumLeft <= fast_vault_req) {
+      //     vaultSpeed = survivorSpeed * slow_vault_pen
+      //   }
+      //   this.physics.moveToObject(this.player[this.playerId], target, vaultSpeed)
+      //   if ( this.player[this.playerId].body.x < target.x - 5){
+      //     this.windows[this.playerId] = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
+      //     this.vault = null
+      //   }
+      //   if (this.collideDuringVault && (this.player[this.playerId].body.x > target.x - 5)) {
+      //     this.windows[this.playerId] = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
+      //     this.vault = null
+      //   }
+      // }
 
-      if (this.vault === 4) {
-        this.physics.world.removeCollider(this.windows[this.playerId])
-        let target = {x: 520, y:140}
+      // if (this.vault === 3) {
+      //   this.physics.world.removeCollider(this.windows[this.playerId])
+      //   let target = {x: 660, y:140}
+      //   let vaultSpeed = survivorSpeed
+      //   if (this.momentumRight <= fast_vault_req) {
+      //     vaultSpeed = survivorSpeed * slow_vault_pen
+      //   }
+      //   this.physics.moveToObject(this.player[this.playerId], target, vaultSpeed)
+      //   if ( this.player[this.playerId].body.x > target.x - 40){
+      //     this.windows[this.playerId] = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
+      //     this.vault = null
+      //   }
+      //   if (this.collideDuringVault && (this.player[this.playerId].body.x < target.x - 40)) {
+      //     this.windows[this.playerId] = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
+      //     this.vault = null
+      //   }
+      // }
+
+      // if (this.vault === 4) {
+      //   this.physics.world.removeCollider(this.windows[this.playerId])
+      //   let target = {x: 520, y:140}
+      //   let vaultSpeed = survivorSpeed
+      //   if (this.momentumLeft <= fast_vault_req) {
+      //     vaultSpeed = survivorSpeed * slow_vault_pen
+      //   }
+      //   this.physics.moveToObject(this.player[this.playerId], target, vaultSpeed)
+      //   if ( this.player[this.playerId].body.x < target.x - 5){
+      //     this.windows[this.playerId] = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
+      //     this.vault = null
+      //   }
+      //   if (this.collideDuringVault && (this.player[this.playerId].body.x > target.x - 5)) {
+      //     this.windows[this.playerId] = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
+      //     this.vault = null
+      //   }
+      // }
+
+      if (this.vault) {
         let vaultSpeed = survivorSpeed
-        if (this.momentumLeft <= fast_vault_req) {
+        let direction
+        let targetOffset
+        if (this.player[this.playerId].body.x < this.vault.x) {
+          direction = 'right'
+          targetOffset = 40
+        } else if (this.player[this.playerId].body.x > this.vault.x) {
+          direction = 'left'
+          targetOffset = 5
+        }
+        this.physics.world.removeCollider(this.windows[this.playerId])
+        if ((this.momentumRight <= fast_vault_req && direction === 'right') || (this.momentumLeft <= fast_vault_req && direction === 'left')) {
           vaultSpeed = survivorSpeed * slow_vault_pen
         }
-        this.physics.moveToObject(this.player[this.playerId], target, vaultSpeed)
-        if ( this.player[this.playerId].body.x < target.x - 5){
+        this.physics.moveToObject(this.player[this.playerId], this.vault, vaultSpeed)
+        if ((this.player[this.playerId].body.x > (this.vault.x - targetOffset) && direction === 'right') || (this.player[this.playerId].body.x < (this.vault.x - targetOffset) && direction === 'left')){
           this.windows[this.playerId] = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
           this.vault = null
         }
-        if (this.collideDuringVault && (this.player[this.playerId].body.x > target.x - 5)) {
+        if (this.collideDuringVault && ((this.player[this.playerId].body.x < (this.vault.x - targetOffset) && direction === 'right') || (this.player[this.playerId].body.x > (this.vault.x - targetOffset) && direction === 'left'))) {
           this.windows[this.playerId] = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
           this.vault = null
         }
@@ -230,27 +257,38 @@ class StartScene extends Phaser.Scene {
 
       if (!this.vault && !this.player[this.playerId].it){
 
-        if (this.space.isDown && this.player[this.playerId].body.x > 170 && this.player[this.playerId].body.x < 280 && this.player[this.playerId].body.y < 485 && this.player[this.playerId].body.y > 405) {
-          this.vault = 1
-          this.collideDuringVault = false
+        this.toBuild.windows.forEach((window) => {
+          if (this.space.isDown && this.player[this.playerId].body.x < window.x && this.player[this.playerId].body.x > (window.x - 110) && this.player[this.playerId].body.y < (window.y + 15) && this.player[this.playerId].body.y > (window.y - 65)) {
+            this.vault = {x: window.x + 70, y: window.y}
+            this.collideDuringVault = false
+          }
+          if (this.space.isDown && this.player[this.playerId].body.x < (window.x + 110) && this.player[this.playerId].body.x > window.x && this.player[this.playerId].body.y < (window.y + 15) && this.player[this.playerId].body.y > (window.y - 65)) {
+            this.vault = {x: window.x - 70, y: window.y}
+            this.collideDuringVault = false
+          }
+        })
 
-        }
+        // if (this.space.isDown && this.player[this.playerId].body.x > 170 && this.player[this.playerId].body.x < 280 && this.player[this.playerId].body.y < 485 && this.player[this.playerId].body.y > 405) {
+        //   this.vault = 1
+        //   this.collideDuringVault = false
 
-        if (this.space.isDown && this.player[this.playerId].body.x < 390 && this.player[this.playerId].body.x > 280 && this.player[this.playerId].body.y < 485 && this.player[this.playerId].body.y > 405) {
-          this.vault = 2
-          this.collideDuringVault = false
+        // }
 
-        }
+        // if (this.space.isDown && this.player[this.playerId].body.x < 390 && this.player[this.playerId].body.x > 280 && this.player[this.playerId].body.y < 485 && this.player[this.playerId].body.y > 405) {
+        //   this.vault = 2
+        //   this.collideDuringVault = false
 
-        if (this.space.isDown && this.player[this.playerId].body.x > 480 && this.player[this.playerId].body.x < 590 && this.player[this.playerId].body.y < 155 && this.player[this.playerId].body.y > 75) {
-          this.vault = 3
-          this.collideDuringVault = false
-        }
+        // }
 
-        if (this.space.isDown && this.player[this.playerId].body.x < 700 && this.player[this.playerId].body.x > 590 && this.player[this.playerId].body.y < 155 && this.player[this.playerId].body.y > 75) {
-          this.vault = 4
-          this.collideDuringVault = false
-        }
+        // if (this.space.isDown && this.player[this.playerId].body.x > 480 && this.player[this.playerId].body.x < 590 && this.player[this.playerId].body.y < 155 && this.player[this.playerId].body.y > 75) {
+        //   this.vault = 3
+        //   this.collideDuringVault = false
+        // }
+
+        // if (this.space.isDown && this.player[this.playerId].body.x < 700 && this.player[this.playerId].body.x > 590 && this.player[this.playerId].body.y < 155 && this.player[this.playerId].body.y > 75) {
+        //   this.vault = 4
+        //   this.collideDuringVault = false
+        // }
 
         if (this.cursors.up.isDown) {
           this.player[this.playerId].body.setVelocityY(-survivorSpeed)
