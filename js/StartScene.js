@@ -28,18 +28,30 @@ class StartScene extends Phaser.Scene {
     this.itChosen = false
     this.vision = this.add.graphics(0,0)
     this.mask = this.vision.createGeometryMask()
+    this.view = [[[0,0],[2000,0]],[[2000,0],[2000,2000]],[[2000,2000],[0,2000]],[[0,2000],[0,0]]]
 
     this.window = this.physics.add.staticGroup()
-    this.window.create(590, 140, "window").setScale(.15, .4).refreshBody()
-    this.window.create(280, 470, "window").setScale(.15, .4).refreshBody()
-
-
     this.walls = this.physics.add.staticGroup()
-    this.walls.create(460, 100, "wall").setScale(1.8, .1).refreshBody() //top wall
-    this.walls.create(590, 242.5, "wall").setScale(.1, 2).refreshBody() // L shaft top
 
-    this.walls.create(280, 510, "wall").setScale(2, .1).refreshBody() //bottom wall
-    this.walls.create(280, 360, "wall").setScale(.1, 2).refreshBody() //T shaft bottom
+    this.toBuild = Generate.tile(0,0,1)
+    this.view = this.view.concat(Generate.tile(0,0,1).vision)
+    this.toBuild.windows = this.toBuild.windows.concat(Generate.tile(1,0,1).windows)
+    this.toBuild.walls = this.toBuild.walls.concat(Generate.tile(1,0,1).walls)
+    this.view = this.view.concat(Generate.tile(1,0,1).vision)
+    this.toBuild.windows = this.toBuild.windows.concat(Generate.tile(0,1,1).windows)
+    this.toBuild.walls = this.toBuild.walls.concat(Generate.tile(0,1,1).walls)
+    this.view = this.view.concat(Generate.tile(0,1,1).vision)
+    this.toBuild.windows = this.toBuild.windows.concat(Generate.tile(1,1,1).windows)
+    this.toBuild.walls = this.toBuild.walls.concat(Generate.tile(1,1,1).walls)
+    this.view = this.view.concat(Generate.tile(1,1,1).vision)
+
+    this.toBuild.windows.forEach((window) => {
+      this.window.create(window.x, window.y, "window").setScale(window.width, window.length).refreshBody()
+    })
+
+    this.toBuild.walls.forEach((wall) => {
+      this.walls.create(wall.x, wall.y, "wall").setScale(wall.width, wall.length).refreshBody()
+    })
 
 
     this.cursors = this.input.keyboard.createCursorKeys()
@@ -312,7 +324,7 @@ class StartScene extends Phaser.Scene {
 
 
     Client.sendPosition(this.player[this.playerId].body.x, this.player[this.playerId].body.y)
-    let visibility = VisibilityPolygon.compute([this.player[this.playerId].body.x+25, this.player[this.playerId].body.y+25], [[[0,0],[800,0]],[[800,0],[800,600]],[[800,600],[0,600]],[[0,600],[0,0]],[[280,210],[280,440]],[[130,510],[280,510]],[[280,510],[430,510]],[[330,100],[595,100]],[[595,170],[595,390]]])
+    let visibility = VisibilityPolygon.computeViewport([this.player[this.playerId].body.x+25, this.player[this.playerId].body.y+25], this.view, [0,0], [2000,2000])
 
 
     this.vision.clear();
