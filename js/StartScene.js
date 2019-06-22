@@ -230,7 +230,7 @@ class StartScene extends Phaser.Scene {
       // killer controlls
       if (this.player[this.playerId].it) {
 
-        if (this.space.isDown && this.lundge <=0) {
+        if (this.space.isDown && this.lundge <= 0) {
           this.lundge = 80
         }
 
