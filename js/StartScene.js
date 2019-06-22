@@ -54,7 +54,12 @@ class StartScene extends Phaser.Scene {
     })
 
 
-    this.cursors = this.input.keyboard.createCursorKeys()
+    this.cursors = this.input.keyboard.addKeys({
+      up: Phaser.Input.Keyboard.KeyCodes.W,
+      down: Phaser.Input.Keyboard.KeyCodes.S,
+      left: Phaser.Input.Keyboard.KeyCodes.A,
+      right: Phaser.Input.Keyboard.KeyCodes.D,
+      })
     this.space = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
     this.testKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
 
@@ -131,9 +136,9 @@ class StartScene extends Phaser.Scene {
     this.momentumRight = 0
     if (player1.texture.key != "wall" && player2.texture.key != "wall"){
       this.collideDuringVault = true
-      if (this.lundge > 60 && (player1.it || player2.it)) {
+      if (this.lundge && !this.lundgeHit && (player1.it || player2.it)) {
         console.log("SMACK")
-        this.lundge = 60
+        this.lundgeHit = true
         if (player1.it){
           Client.hitConfirm(player2.id)
         } else if (player2.it) {
@@ -233,6 +238,21 @@ class StartScene extends Phaser.Scene {
           this.lundgeStart = delta
         }
 
+        // if (this.cursors.up.isDown) {
+        //   this.up = true
+        // }
+        // if (this.cursors.down.isDown) {
+        //   this.down = true
+        // }
+        // if (this.cursors.left.isDown) {
+        //   this.left = true
+        // }
+        // if (this.cursors.right.isDown) {
+        //   this.right = true
+        // }
+
+        // console.log(this.up, this.down, this.left, this.right, this.lundge)
+
         if (this.cursors.up.isDown && !this.cursors.down.isDown) {
           this.player[this.playerId].body.setVelocityY(-survivorSpeed*1.15)
         }
@@ -243,27 +263,19 @@ class StartScene extends Phaser.Scene {
 
         if (this.cursors.left.isDown && !this.cursors.right.isDown) {
           this.player[this.playerId].body.setVelocityX(-survivorSpeed*1.15)
-          this.momentumRight = 0
-          this.momentumLeft += 1
         }
 
         if (this.cursors.right.isDown && !this.cursors.left.isDown) {
           this.player[this.playerId].body.setVelocityX(survivorSpeed*1.15)
-          this.momentumLeft = 0
-          this.momentumRight += 1
         }
 
-        if (!this.cursors.right.isDown && !this.cursors.left.isDown) {
-          this.momentumLeft = 0
-          this.momentumRight = 0
-        }
-
-        if (this.lundge && (delta - this.lundgeStart) < 300) {
+        if (this.lundge && (delta - this.lundgeStart) < 300 && !this.lundgeHit) {
           this.player[this.playerId].body.velocity.normalize().scale(survivorSpeed*1.725)
         } else if (this.lundge && (delta - this.lundgeStart < 1500)){
           this.player[this.playerId].body.velocity.normalize().scale(survivorSpeed*.3)
         } else {
           this.lundge = false
+          this.lundgeHit = false
           this.player[this.playerId].body.velocity.normalize().scale(survivorSpeed*1.15)
         }
 
