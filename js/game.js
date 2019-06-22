@@ -3,9 +3,11 @@ const config = {
   type: Phaser.AUTO,
   width: 800,
   height: 800,
-  fps: 60,
   physics: {
     default: "arcade",
+    arcade: {
+      fps: 60,
+    },
   },
   scene: [StartScene2]
 };
