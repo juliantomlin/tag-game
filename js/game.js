@@ -6,7 +6,7 @@ const config = {
   physics: {
     default: "arcade",
     arcade: {
-      fps: 15,
+      fps: 60,
     },
   },
   scene: [StartScene2]

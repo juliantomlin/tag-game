@@ -150,8 +150,6 @@ class StartScene extends Phaser.Scene {
 
       this.player[this.playerId].body.setVelocity(0)
 
-      console.log(this.lundge)
-
       if (this.testKey.isDown) {
         Client.sendTest()
 
@@ -230,8 +228,9 @@ class StartScene extends Phaser.Scene {
       // killer controlls
       if (this.player[this.playerId].it) {
 
-        if (this.space.isDown && this.lundge <= 0) {
-          this.lundge = 80
+        if (this.space.isDown && !this.lundge) {
+          this.lundge = true
+          this.lundgeStart = delta
         }
 
         if (this.cursors.up.isDown && !this.cursors.down.isDown) {
@@ -259,13 +258,12 @@ class StartScene extends Phaser.Scene {
           this.momentumRight = 0
         }
 
-        if (this.lundge > 60) {
+        if (this.lundge && (delta - this.lundgeStart) < 300) {
           this.player[this.playerId].body.velocity.normalize().scale(survivorSpeed*1.725)
-          this.lundge --
-        } else if (this.lundge > 0){
+        } else if (this.lundge && (delta - this.lundgeStart < 1500)){
           this.player[this.playerId].body.velocity.normalize().scale(survivorSpeed*.3)
-          this.lundge --
         } else {
+          this.lundge = false
           this.player[this.playerId].body.velocity.normalize().scale(survivorSpeed*1.15)
         }
 
