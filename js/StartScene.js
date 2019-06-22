@@ -62,7 +62,6 @@ class StartScene extends Phaser.Scene {
     this.lundge = 0
     this.momentumLeft = 0
     this.momentumRight = 0
-    this.stopped = false
     this.damageBoost = 0
 
     if (this.player) {
@@ -132,7 +131,7 @@ class StartScene extends Phaser.Scene {
     this.momentumRight = 0
     if (player1.texture.key != "wall" && player2.texture.key != "wall"){
       this.collideDuringVault = true
-      if (this.lundge > 60) {
+      if (this.lundge > 60 && (player1.it || player2.it)) {
         console.log("SMACK")
         this.lundge = 60
         if (player1.it){
@@ -209,9 +208,7 @@ class StartScene extends Phaser.Scene {
           this.player[this.playerId].body.setVelocityX(-survivorSpeed)
           this.momentumRight = 0
           this.momentumLeft += 1
-          if (this.stopped){
-            this.momentumLeft = 0
-          }
+
         } else if (this.cursors.right.isDown && !this.cursors.left.isDown) {
           this.player[this.playerId].body.setVelocityX(survivorSpeed)
           this.momentumLeft = 0
@@ -237,9 +234,11 @@ class StartScene extends Phaser.Scene {
           this.lundge = 80
         }
 
-        if (this.cursors.up.isDown) {
+        if (this.cursors.up.isDown && !this.cursors.down.isDown) {
           this.player[this.playerId].body.setVelocityY(-survivorSpeed*1.15)
-        } else if (this.cursors.down.isDown) {
+        }
+
+        if (this.cursors.down.isDown && !this.cursors.up.isDown) {
           this.player[this.playerId].body.setVelocityY(survivorSpeed*1.15)
         }
 
@@ -247,17 +246,19 @@ class StartScene extends Phaser.Scene {
           this.player[this.playerId].body.setVelocityX(-survivorSpeed*1.15)
           this.momentumRight = 0
           this.momentumLeft += 1
-          if (this.stopped){
-            this.momentumLeft = 0
-          }
-        } else if (this.cursors.right.isDown && !this.cursors.left.isDown) {
+        }
+
+        if (this.cursors.right.isDown && !this.cursors.left.isDown) {
           this.player[this.playerId].body.setVelocityX(survivorSpeed*1.15)
           this.momentumLeft = 0
           this.momentumRight += 1
-        } else {
+        }
+
+        if (!this.cursors.right.isDown && !this.cursors.left.isDown) {
           this.momentumLeft = 0
           this.momentumRight = 0
         }
+
         if (this.lundge > 60) {
           this.player[this.playerId].body.velocity.normalize().scale(survivorSpeed*1.725)
           this.lundge --
