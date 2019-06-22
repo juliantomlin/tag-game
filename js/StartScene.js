@@ -28,7 +28,7 @@ class StartScene extends Phaser.Scene {
     this.itChosen = false
     this.vision = this.add.graphics(0,0)
     this.mask = this.vision.createGeometryMask()
-    this.view = [[[0,0],[2000,0]],[[2000,0],[2000,2000]],[[2000,2000],[0,2000]],[[0,2000],[0,0]]]
+    this.view = [[[0,0],[1600,0]],[[1600,0],[1600,1600]],[[1600,1600],[0,1600]],[[0,1600],[0,0]]]
 
     this.window = this.physics.add.staticGroup()
     this.walls = this.physics.add.staticGroup()
@@ -151,84 +151,14 @@ class StartScene extends Phaser.Scene {
 
       this.player[this.playerId].body.setVelocity(0)
 
+      console.log(this.lundge)
+
       if (this.testKey.isDown) {
         Client.sendTest()
 
       }
 
-
-      // if (this.vault === 1) {
-      //   this.physics.world.removeCollider(this.windows[this.playerId])
-      //   let target = {x: 350, y:470}
-      //   let vaultSpeed = survivorSpeed
-      //   if (this.momentumRight <= fast_vault_req) {
-      //     vaultSpeed = survivorSpeed * slow_vault_pen
-      //   }
-      //   this.physics.moveToObject(this.player[this.playerId], target, vaultSpeed)
-      //   if ( this.player[this.playerId].body.x > target.x - 40){
-      //     this.windows[this.playerId] = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
-      //     this.vault = null
-      //   }
-      //   if (this.collideDuringVault && (this.player[this.playerId].body.x < target.x - 40)) {
-      //     this.windows[this.playerId] = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
-      //     this.vault = null
-      //   }
-      // }
-
-      // if (this.vault === 2) {
-      //   this.physics.world.removeCollider(this.windows[this.playerId])
-      //   let target = {x: 210, y:470}
-      //   let vaultSpeed = survivorSpeed
-      //   if (this.momentumLeft <= fast_vault_req) {
-      //     vaultSpeed = survivorSpeed * slow_vault_pen
-      //   }
-      //   this.physics.moveToObject(this.player[this.playerId], target, vaultSpeed)
-      //   if ( this.player[this.playerId].body.x < target.x - 5){
-      //     this.windows[this.playerId] = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
-      //     this.vault = null
-      //   }
-      //   if (this.collideDuringVault && (this.player[this.playerId].body.x > target.x - 5)) {
-      //     this.windows[this.playerId] = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
-      //     this.vault = null
-      //   }
-      // }
-
-      // if (this.vault === 3) {
-      //   this.physics.world.removeCollider(this.windows[this.playerId])
-      //   let target = {x: 660, y:140}
-      //   let vaultSpeed = survivorSpeed
-      //   if (this.momentumRight <= fast_vault_req) {
-      //     vaultSpeed = survivorSpeed * slow_vault_pen
-      //   }
-      //   this.physics.moveToObject(this.player[this.playerId], target, vaultSpeed)
-      //   if ( this.player[this.playerId].body.x > target.x - 40){
-      //     this.windows[this.playerId] = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
-      //     this.vault = null
-      //   }
-      //   if (this.collideDuringVault && (this.player[this.playerId].body.x < target.x - 40)) {
-      //     this.windows[this.playerId] = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
-      //     this.vault = null
-      //   }
-      // }
-
-      // if (this.vault === 4) {
-      //   this.physics.world.removeCollider(this.windows[this.playerId])
-      //   let target = {x: 520, y:140}
-      //   let vaultSpeed = survivorSpeed
-      //   if (this.momentumLeft <= fast_vault_req) {
-      //     vaultSpeed = survivorSpeed * slow_vault_pen
-      //   }
-      //   this.physics.moveToObject(this.player[this.playerId], target, vaultSpeed)
-      //   if ( this.player[this.playerId].body.x < target.x - 5){
-      //     this.windows[this.playerId] = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
-      //     this.vault = null
-      //   }
-      //   if (this.collideDuringVault && (this.player[this.playerId].body.x > target.x - 5)) {
-      //     this.windows[this.playerId] = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
-      //     this.vault = null
-      //   }
-      // }
-
+      //survivor vault
       if (this.vault) {
         let vaultSpeed = survivorSpeed
         let direction
@@ -255,6 +185,7 @@ class StartScene extends Phaser.Scene {
         }
       }
 
+      //survivor controlls
       if (!this.vault && !this.player[this.playerId].it){
 
         this.toBuild.windows.forEach((window) => {
@@ -267,28 +198,6 @@ class StartScene extends Phaser.Scene {
             this.collideDuringVault = false
           }
         })
-
-        // if (this.space.isDown && this.player[this.playerId].body.x > 170 && this.player[this.playerId].body.x < 280 && this.player[this.playerId].body.y < 485 && this.player[this.playerId].body.y > 405) {
-        //   this.vault = 1
-        //   this.collideDuringVault = false
-
-        // }
-
-        // if (this.space.isDown && this.player[this.playerId].body.x < 390 && this.player[this.playerId].body.x > 280 && this.player[this.playerId].body.y < 485 && this.player[this.playerId].body.y > 405) {
-        //   this.vault = 2
-        //   this.collideDuringVault = false
-
-        // }
-
-        // if (this.space.isDown && this.player[this.playerId].body.x > 480 && this.player[this.playerId].body.x < 590 && this.player[this.playerId].body.y < 155 && this.player[this.playerId].body.y > 75) {
-        //   this.vault = 3
-        //   this.collideDuringVault = false
-        // }
-
-        // if (this.space.isDown && this.player[this.playerId].body.x < 700 && this.player[this.playerId].body.x > 590 && this.player[this.playerId].body.y < 155 && this.player[this.playerId].body.y > 75) {
-        //   this.vault = 4
-        //   this.collideDuringVault = false
-        // }
 
         if (this.cursors.up.isDown) {
           this.player[this.playerId].body.setVelocityY(-survivorSpeed)
@@ -321,6 +230,7 @@ class StartScene extends Phaser.Scene {
         }
       }
 
+      // killer controlls
       if (this.player[this.playerId].it) {
 
         if (this.space.isDown && this.lundge <=0) {
