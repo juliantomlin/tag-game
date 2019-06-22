@@ -115,7 +115,7 @@ class StartScene extends Phaser.Scene {
 
     this.receiveDamage = function(id) {
       if (this.playerId === id) {
-        this.damageBoost = 180
+        this.player[id].damageBoost = true
       }
       this.player[id].setTintFill(0xffffff)
       setTimeout(() => this.player[id].clearTint(), 150)
@@ -132,8 +132,13 @@ class StartScene extends Phaser.Scene {
   }
 
   killMomentum (player1, player2) {
-    this.momentumLeft = 0
-    this.momentumRight = 0
+
+      player1.momentumLeft = 0
+      player1.momentumRight = 0
+
+      player2.momentumLeft = 0
+      player2.momentumRight = 0
+
     if (player1.texture.key != "wall" && player2.texture.key != "wall"){
       this.collideDuringVault = true
       if (this.lundge && !this.lundgeHit && (player1.it || player2.it)) {
@@ -173,7 +178,7 @@ class StartScene extends Phaser.Scene {
           targetOffset = 5
         }
         this.physics.world.removeCollider(this.windows[this.playerId])
-        if ((this.momentumRight <= fast_vault_req && direction === 'right') || (this.momentumLeft <= fast_vault_req && direction === 'left')) {
+        if ((this.player[this.playerId].momentumRight <= fast_vault_req && direction === 'right') || (this.player[this.playerId].momentumLeft <= fast_vault_req && direction === 'left')) {
           vaultSpeed = survivorSpeed * slow_vault_pen
         }
         this.physics.moveToObject(this.player[this.playerId], this.vault, vaultSpeed)
@@ -181,7 +186,7 @@ class StartScene extends Phaser.Scene {
           this.windows[this.playerId] = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
           this.vault = null
         }
-        if (this.collideDuringVault && ((this.player[this.playerId].body.x < (this.vault.x - targetOffset) && direction === 'right') || (this.player[this.playerId].body.x > (this.vault.x - targetOffset) && direction === 'left'))) {
+        if (this.vault && this.collideDuringVault && ((this.player[this.playerId].body.x < (this.vault.x - targetOffset) && direction === 'right') || (this.player[this.playerId].body.x > (this.vault.x - targetOffset) && direction === 'left'))) {
           this.windows[this.playerId] = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
           this.vault = null
         }
@@ -209,22 +214,25 @@ class StartScene extends Phaser.Scene {
 
         if (this.cursors.left.isDown && !this.cursors.right.isDown) {
           this.player[this.playerId].body.setVelocityX(-survivorSpeed)
-          this.momentumRight = 0
-          this.momentumLeft += 1
+          this.player[this.playerId].momentumRight = 0
+          this.player[this.playerId].momentumLeft += 1
 
         } else if (this.cursors.right.isDown && !this.cursors.left.isDown) {
           this.player[this.playerId].body.setVelocityX(survivorSpeed)
-          this.momentumLeft = 0
-          this.momentumRight += 1
+          this.player[this.playerId].momentumLeft = 0
+          this.player[this.playerId].momentumRight += 1
         } else {
-          this.momentumLeft = 0
-          this.momentumRight = 0
+          this.player[this.playerId].momentumLeft = 0
+          this.player[this.playerId].momentumRight = 0
         }
 
-        if (this.damageBoost > 0) {
+        if (this.player[this.playerId].damageBoost) {
+          this.player[this.playerId].damageBoostStart = delta
+          this.player[this.playerId].damageBoost = false
+        }
+
+        if (delta - this.player[this.playerId].damageBoostStart < 3000) {
           this.player[this.playerId].body.velocity.normalize().scale(survivorSpeed * 1.5)
-          this.damageBoost --
-          console.log(this.damageBoost)
         } else {
           this.player[this.playerId].body.velocity.normalize().scale(survivorSpeed)
         }
