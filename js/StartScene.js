@@ -32,6 +32,7 @@ class StartScene extends Phaser.Scene {
 
     this.window = this.physics.add.staticGroup()
     this.walls = this.physics.add.staticGroup()
+    this.players = this.physics.add.staticGroup()
 
     this.toBuild = Generate.tile(0,0,1)
     this.view = this.view.concat(Generate.tile(0,0,1).vision)
@@ -70,41 +71,62 @@ class StartScene extends Phaser.Scene {
     this.damageBoost = 0
 
     if (this.player) {
-      console.log('masking old player')
       for (const existingPlayer in this.player) {
-        console.log(this.player[existingPlayer])
         this.player[existingPlayer].setMask(this.mask)
       }
     }
 
     this.addNewPlayer = function(id, x, y, user) {
-      if (!this.itChosen) {
-        this.player[id] = this.physics.add.sprite(x, y, "it").setScale(.4,.4)
-        this.player[id].it = true
-        this.itChosen = true
-        this.player[id].setCircle(75)
-      }else{
-        this.player[id] = this.physics.add.sprite(x, y, "ball").setScale(.3,.3)
-        this.player[id].it = false
-        this.player[id].setCircle(75)
+      if (!user) {
+        if (!this.itChosen) {
+          this.player[id] = this.players.create(x, y, "it").setScale(.4,.4).setMass(100)
+          this.player[id].it = true
+          this.itChosen = true
+          //this.player[id].setCircle((this.player[id].width/2))
+        }else{
+          this.player[id] = this.players.create(x, y, "ball").setScale(.3,.3).setMass(100)
+          this.player[id].it = false
+          //this.player[id].setCircle((this.player[id].width/2))
+        }
+        this.player[id].body.immovable = true
+        this.player[id].body.moves = false
+        this.player[id].setMask(this.mask)
+        this.player[id].id = id
+        this.player[id].body.collideWorldBounds = true
+        this.windows[id] = this.physics.add.collider(this.player[id], this.walls, this.killMomentum, null, this)
+        this.playerCollision[id] = []
+        for (let char in this.player) {
+          this.playerCollision[id].push(this.physics.add.collider(this.player[id], this.player[char], this.killMomentum, null, this))
+        }
+
       }
-      this.player[id].setMask(this.mask)
-      this.player[id].id = id
-      this.player[id].body.collideWorldBounds = true
-      this.windows[id] = this.physics.add.collider(this.player[id], this.walls, this.killMomentum, null, this)
-      this.playerCollision[id] = []
-      for (let char in this.player) {
-        this.playerCollision[id].push(this.physics.add.collider(this.player[id], this.player[char], this.killMomentum, null, this))
-      }
-      if (user) {
+      else {
         this.playerId = id
+        if (!this.itChosen) {
+          this.player[id] = this.physics.add.sprite(x, y, "it").setScale(.4,.4)
+          this.player[id].it = true
+          this.itChosen = true
+          //this.player[id].setCircle(this.player[id].width/2)
+        }else{
+          this.player[id] = this.physics.add.sprite(x, y, "ball").setScale(.3,.3)
+          this.player[id].it = false
+          //this.player[id].setCircle(this.player[id].width/2)
+        }
+        this.player[id].setMask(this.mask)
+        this.player[id].id = id
+        this.player[id].body.collideWorldBounds = true
+        this.windows[id] = this.physics.add.collider(this.player[id], this.walls, this.killMomentum, null, this)
+        this.playerCollision[id] = []
+        for (let char in this.player) {
+          this.playerCollision[id].push(this.physics.add.collider(this.player[id], this.player[char], this.killMomentum, null, this))
+        }
         this.cameras.main.startFollow(this.player[this.playerId], true, 0.08, 0.08)
       }
     }
 
     this.movePlayer = function(id,x,y) {
       if (id != this.playerId) {
-        this.player[id].setPosition(x+25,y+25)
+        this.player[id].setPosition(x+25,y+25).refreshBody()
       }
     }
 
@@ -127,22 +149,23 @@ class StartScene extends Phaser.Scene {
 
     }
 
-    console.log("creating player")
     Client.askNewPlayer()
   }
 
   killMomentum (player1, player2) {
 
+
       player1.momentumLeft = 0
       player1.momentumRight = 0
+      player1.disableInteractive()
 
       player2.momentumLeft = 0
       player2.momentumRight = 0
+      player2.disableInteractive()
 
     if (player1.texture.key != "wall" && player2.texture.key != "wall"){
       this.collideDuringVault = true
       if (this.lundge && !this.lundgeHit && (player1.it || player2.it)) {
-        console.log("SMACK")
         this.lundgeHit = true
         if (player1.it){
           Client.hitConfirm(player2.id)
@@ -276,6 +299,8 @@ class StartScene extends Phaser.Scene {
 
 
     Client.sendPosition(this.player[this.playerId].body.x, this.player[this.playerId].body.y)
+
+
     let visibility = VisibilityPolygon.computeViewport([this.player[this.playerId].body.x+25, this.player[this.playerId].body.y+25], this.view, [0,0], [2000,2000])
 
 
