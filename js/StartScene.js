@@ -246,21 +246,6 @@ class StartScene extends Phaser.Scene {
           this.lundgeStart = delta
         }
 
-        // if (this.cursors.up.isDown) {
-        //   this.up = true
-        // }
-        // if (this.cursors.down.isDown) {
-        //   this.down = true
-        // }
-        // if (this.cursors.left.isDown) {
-        //   this.left = true
-        // }
-        // if (this.cursors.right.isDown) {
-        //   this.right = true
-        // }
-
-        // console.log(this.up, this.down, this.left, this.right, this.lundge)
-
         if (this.cursors.up.isDown && !this.cursors.down.isDown) {
           this.player[this.playerId].body.setVelocityY(-survivorSpeed*1.15)
         }
