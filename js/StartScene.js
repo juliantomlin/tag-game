@@ -79,17 +79,17 @@ class StartScene extends Phaser.Scene {
     this.addNewPlayer = function(id, x, y, user) {
       if (!user) {
         if (!this.itChosen) {
-          this.player[id] = this.players.create(x, y, "it").setScale(.4,.4).setMass(100)
+          this.player[id] = this.players.create(x, y, "it").setScale(.4,.4)
           this.player[id].it = true
           this.itChosen = true
           //this.player[id].setCircle((this.player[id].width/2))
         }else{
-          this.player[id] = this.players.create(x, y, "ball").setScale(.3,.3).setMass(100)
+          this.player[id] = this.players.create(x, y, "ball").setScale(.3,.3)
           this.player[id].it = false
           //this.player[id].setCircle((this.player[id].width/2))
         }
-        this.player[id].body.immovable = true
-        this.player[id].body.moves = false
+        //this.player[id].body.immovable = true
+        //this.player[id].body.moves = false
         this.player[id].setMask(this.mask)
         this.player[id].id = id
         this.player[id].body.collideWorldBounds = true
@@ -103,15 +103,18 @@ class StartScene extends Phaser.Scene {
       else {
         this.playerId = id
         if (!this.itChosen) {
-          this.player[id] = this.physics.add.sprite(x, y, "it").setScale(.4,.4)
+          this.player[id] = this.physics.add.sprite(x, y, "it").setScale(.4,.4).setBounce(.1)
           this.player[id].it = true
           this.itChosen = true
           //this.player[id].setCircle(this.player[id].width/2)
         }else{
-          this.player[id] = this.physics.add.sprite(x, y, "ball").setScale(.3,.3)
+          this.player[id] = this.physics.add.sprite(x, y, "ball").setScale(.3,.3).setBounce(.1)
           this.player[id].it = false
           //this.player[id].setCircle(this.player[id].width/2)
         }
+        this.playerCollisionCheck = this.physics.add.image(x-1,y-1)
+        this.playerCollisionCheck.displayWidth = this.player[id].displayWidth + 2
+        this.playerCollisionCheck.displayHeight = this.player[id].displayHeight + 2
         this.player[id].setMask(this.mask)
         this.player[id].id = id
         this.player[id].body.collideWorldBounds = true
@@ -126,7 +129,7 @@ class StartScene extends Phaser.Scene {
 
     this.movePlayer = function(id,x,y) {
       if (id != this.playerId) {
-        this.player[id].setPosition(x+25,y+25).refreshBody()
+        this.player[id].setOrigin(0,0).setPosition(x,y).refreshBody()
       }
     }
 
@@ -181,11 +184,28 @@ class StartScene extends Phaser.Scene {
 
     if (this.playerId && this.player[this.playerId]) {
 
+      console.log(this.player[this.playerId].body.touching)
+
+      this.playerCollisionCheck.body.x = this.player[this.playerId].body.x - 1
+      this.playerCollisionCheck.body.y = this.player[this.playerId].body.y - 1
+
+
       this.player[this.playerId].body.setVelocity(0)
 
-      if (this.testKey.isDown) {
-        Client.sendTest()
+      if (this.player[this.playerId].body.touching.up) {
+        this.upBlock = true
+      }
 
+      if (this.player[this.playerId].body.touching.down) {
+        this.downBlock = true
+      }
+
+      if (this.player[this.playerId].body.touching.right) {
+        this.rightBlock = true
+      }
+
+      if (this.player[this.playerId].body.touching.left) {
+        this.leftBlock = true
       }
 
       //survivor vault
@@ -229,9 +249,9 @@ class StartScene extends Phaser.Scene {
           }
         })
 
-        if (this.cursors.up.isDown) {
+        if (this.cursors.up.isDown && !this.cursors.down.isDown) {
           this.player[this.playerId].body.setVelocityY(-survivorSpeed)
-        } else if (this.cursors.down.isDown) {
+        } else if (this.cursors.down.isDown && !this.cursors.up.isDown) {
           this.player[this.playerId].body.setVelocityY(survivorSpeed)
         }
 
@@ -256,8 +276,10 @@ class StartScene extends Phaser.Scene {
 
         if (delta - this.player[this.playerId].damageBoostStart < 3000) {
           this.player[this.playerId].body.velocity.normalize().scale(survivorSpeed * 1.5)
+          this.playerCollisionCheck.body.velocity.normalize().scale(survivorSpeed * 1.5)
         } else {
           this.player[this.playerId].body.velocity.normalize().scale(survivorSpeed)
+          this.playerCollisionCheck.body.velocity.normalize().scale(survivorSpeed)
         }
       }
 
