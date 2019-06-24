@@ -27,6 +27,7 @@ class MainMenu extends Phaser.Scene {
         .setOrigin(0.5,0)
         .setInteractive()
         .on('pointerdown', () => {
+          Client.makeNewRoom()
           this.scene.stop()
           this.scene.start('StartScene')
         })

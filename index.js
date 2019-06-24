@@ -2,6 +2,7 @@ var express = require('express');
 var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io').listen(server);
+const uuidv1 = require('uuid/v1')
 
 app.use('/css', express.static(__dirname + '/css'));
 app.use('/js', express.static(__dirname + '/js'));
@@ -12,46 +13,54 @@ app.get('/', function(req, res) {
 });
 
 server.lastPlayderID = 0;
+server.rooms = []
 
 io.on('connection',function(socket){
-  console.log('socket connected')
 
-    socket.on('newplayer',function(){
-      console.log('making new player')
+    socket.on('newRoom', function() {
+        let roomInfo = {id: uuidv1(), seed: Math.round(Math.random()*100)}
+        server.rooms.push(roomInfo)
+        socket.join(roomInfo.id)
+        io.emit('roomAssign', roomInfo)
+    })
+
+    socket.on('joinRoom', function(){
+        io.emit('roomAssign', server.rooms[0])
+    })
+
+    socket.on('newplayer',function(room){
+        console.log(room)
         socket.player = {
             id: server.lastPlayderID++,
             x: randomInt(100,400),
-            y: randomInt(100,400)
+            y: randomInt(100,400),
+            room: room
         };
-        socket.emit('allplayers',getAllPlayers());
-        socket.broadcast.emit('newplayer',socket.player);
-        console.log('newplayer sent')
+        socket.emit('allplayers',getAllPlayers(room));
+        socket.broadcast.to(room).emit('newplayer',socket.player);
 
         socket.on('move',function(data){
             socket.player.x = data.x;
             socket.player.y = data.y;
-            io.emit('move',socket.player);
+            io.to(room).emit('move',socket.player);
         });
 
         socket.on('playerHit', function(data){
-            io.emit('hitConfirm', data)
+            io.to(room).emit('hitConfirm', data.id)
         })
 
         socket.on('disconnect',function(){
-            io.emit('remove',socket.player.id);
+            io.to(room).emit('remove',socket.player.id);
         });
     });
 
-    socket.on('test',function(){
-        console.log('test received');
-    });
 });
 
-function getAllPlayers(){
+function getAllPlayers(roomId){
     var players = [];
     Object.keys(io.sockets.connected).forEach(function(socketID){
         var player = io.sockets.connected[socketID].player;
-        if(player) players.push(player);
+        if(player && player.room === roomId) players.push(player);
     });
     return players;
 }

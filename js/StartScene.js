@@ -16,6 +16,7 @@ class StartScene extends Phaser.Scene {
   }
 
   create() {
+    console.log(Client.room)
     this.background = this.add.tileSprite(0,0,1600,1600, 'ground').setOrigin(0, 0)
     this.cameras.main.setBounds(-400, -400, 2400, 2400)
     this.physics.world.setBounds(0, 0, 1600, 1600)
@@ -186,8 +187,6 @@ class StartScene extends Phaser.Scene {
 
     if (this.playerId && this.player[this.playerId]) {
 
-      console.log(this.player[this.playerId].body.touching)
-
       this.playerCollisionCheck.body.x = this.player[this.playerId].body.x - 1
       this.playerCollisionCheck.body.y = this.player[this.playerId].body.y - 1
 
@@ -339,7 +338,6 @@ class StartScene extends Phaser.Scene {
         }
 
       }
-
 
     Client.sendPosition(this.player[this.playerId].body.x, this.player[this.playerId].body.y)
 

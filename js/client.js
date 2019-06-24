@@ -3,32 +3,36 @@
 const Client = {}
 Client.socket = io.connect()
 
-Client.sendTest = function() {
-  console.log("test sent")
-  Client.socket.emit('test')
+Client.makeNewRoom = function() {
+  Client.socket.emit('newRoom')
+}
+
+Client.joinRoom = function() {
+  Client.socket.emit('joinRoom')
 }
 
 Client.askNewPlayer = function(){
-  console.log("making new player requet")
-    Client.socket.emit('newplayer');
+    Client.socket.emit('newplayer', Client.room.id);
 };
 
 Client.sendPosition = function(x,y){
-  Client.socket.emit('move',{x:x,y:y});
+  Client.socket.emit('move',{x:x,y:y, room: Client.room.id});
 };
 
 Client.hitConfirm = function(id) {
   console.log('did hit confirm happen')
-  Client.socket.emit('playerHit', id)
+  Client.socket.emit('playerHit', {id:id, room: Client.room.id})
 }
+
+Client.socket.on('roomAssign', function(data){
+  Client.room = data
+})
 
 Client.socket.on('hitConfirm', function(data){
   StartScene2.receiveDamage(data)
 })
 
-
 Client.socket.on('newplayer',function(data){
-    //this.player = this.physics.add.sprite(50, 350, "ball").setScale(.3,.3)
     StartScene2.addNewPlayer(data.id,data.x,data.y, false);
 });
 
