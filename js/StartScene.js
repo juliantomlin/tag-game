@@ -79,12 +79,12 @@ class StartScene extends Phaser.Scene {
     this.addNewPlayer = function(id, x, y, user) {
       if (!user) {
         if (!this.itChosen) {
-          this.player[id] = this.players.create(x, y, "it").setScale(.4,.4)
+          this.player[id] = this.players.create(x, y, "it").setScale(.4,.4).refreshBody()
           this.player[id].it = true
           this.itChosen = true
           //this.player[id].setCircle((this.player[id].width/2))
         }else{
-          this.player[id] = this.players.create(x, y, "ball").setScale(.3,.3)
+          this.player[id] = this.players.create(x, y, "ball").setScale(.3,.3).refreshBody()
           this.player[id].it = false
           //this.player[id].setCircle((this.player[id].width/2))
         }
@@ -160,11 +160,13 @@ class StartScene extends Phaser.Scene {
 
       player1.momentumLeft = 0
       player1.momentumRight = 0
-      player1.disableInteractive()
+      player1.momentumUp = 0
+      player1.momentumDown = 0
 
       player2.momentumLeft = 0
       player2.momentumRight = 0
-      player2.disableInteractive()
+      player2.momentumUp = 0
+      player2.momentumDown = 0
 
     if (player1.texture.key != "wall" && player2.texture.key != "wall"){
       this.collideDuringVault = true
