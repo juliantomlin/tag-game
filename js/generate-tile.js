@@ -9,6 +9,8 @@ Generate.tile = function (tileX, tileY, tileId, rotation) {
     const point2 = [470,140,100,242.5,510,360,210,440,510,510,510,510,100,100,170,390]
     const thick1 = [.15, .15, 1.8, .1, 2, .1]
     const thick2 = [.4, .4, .1, 2, .1, 2]
+    const vault = [1, 1]
+    let direction
     let x
     let y
     let width
@@ -18,29 +20,33 @@ Generate.tile = function (tileX, tileY, tileId, rotation) {
       y = point2
       width = thick1
       length = thick2
+      direction = vault
     }
     else if (rotation === 2){
       x = point2.map(x => max - x)
       y = point1
       width = thick2
       length = thick1
+      direction = vault.map(x => -x)
     }
     else if (rotation === 3){
       x = point1.map(x => max - x)
       y = point2.map(y => max - y)
       width = thick1
       length = thick2
+      direction = vault
     }
     else if (rotation === 4){
       x = point2
       y = point1.map(y => max - y)
       width = thick2
       length = thick1
+      direction = vault.map(x => -x)
     }
     return {
       windows: [
-        {x:x[0]+max*tileX, y:y[0]+max*tileY, width:width[0], length:length[0]},
-        {x:x[1]+max*tileX, y:y[1]+max*tileY, width:width[1], length:length[1]}
+        {x:x[0]+max*tileX, y:y[0]+max*tileY, width:width[0], length:length[0], direction: direction[0]},
+        {x:x[1]+max*tileX, y:y[1]+max*tileY, width:width[1], length:length[1], direction: direction[1]}
       ],
       walls: [
         {x:x[2]+max*tileX, y:y[2]+max*tileY, width:width[2], length:length[2]},

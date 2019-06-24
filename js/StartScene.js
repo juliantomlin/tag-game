@@ -211,25 +211,25 @@ class StartScene extends Phaser.Scene {
       //survivor vault
       if (this.vault) {
         let vaultSpeed = survivorSpeed
-        let direction
-        let targetOffset
-        if (this.player[this.playerId].body.x < this.vault.x) {
-          direction = 'right'
-          targetOffset = 40
-        } else if (this.player[this.playerId].body.x > this.vault.x) {
-          direction = 'left'
-          targetOffset = 5
-        }
+        // let direction
+        // let targetOffset
+        // if (this.player[this.playerId].body.x < this.vault.x) {
+        //   direction = 'right'
+        //   targetOffset = 40
+        // } else if (this.player[this.playerId].body.x > this.vault.x) {
+        //   direction = 'left'
+        //   targetOffset = 5
+        // }
         this.physics.world.removeCollider(this.windows[this.playerId])
-        if ((this.player[this.playerId].momentumRight <= fast_vault_req && direction === 'right') || (this.player[this.playerId].momentumLeft <= fast_vault_req && direction === 'left')) {
+        if ((this.player[this.playerId].momentumRight <= fast_vault_req && this.vault.direction === 'right') || (this.player[this.playerId].momentumLeft <= fast_vault_req && this.vault.direction === 'left') || (this.player[this.playerId].momentumUp <= fast_vault_req && this.vault.direction === 'up') || (this.player[this.playerId].momentumDown <= fast_vault_req && this.vault.direction === 'down')) {
           vaultSpeed = survivorSpeed * slow_vault_pen
         }
         this.physics.moveToObject(this.player[this.playerId], this.vault, vaultSpeed)
-        if ((this.player[this.playerId].body.x > (this.vault.x - targetOffset) && direction === 'right') || (this.player[this.playerId].body.x < (this.vault.x - targetOffset) && direction === 'left')){
+        if ((this.player[this.playerId].body.x > (this.vault.x - 40) && this.vault.direction === 'right') || (this.player[this.playerId].body.x < (this.vault.x - 5) && this.vault.direction === 'left') || (this.player[this.playerId].body.y < (this.vault.y - 5) && this.vault.direction === 'up') || (this.player[this.playerId].body.y > (this.vault.y - 40) && this.vault.direction === 'down')){
           this.windows[this.playerId] = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
           this.vault = null
         }
-        if (this.vault && this.collideDuringVault && ((this.player[this.playerId].body.x < (this.vault.x - targetOffset) && direction === 'right') || (this.player[this.playerId].body.x > (this.vault.x - targetOffset) && direction === 'left'))) {
+        if (this.vault && this.collideDuringVault && ((this.player[this.playerId].body.x < (this.vault.x - 40) && this.vault.direction === 'right') || (this.player[this.playerId].body.x > (this.vault.x - 5) && this.vault.direction === 'left') || (this.player[this.playerId].body.y > (this.vault.y - 5) && this.vault.direction === 'up') || (this.player[this.playerId].body.y < (this.vault.y - 40) && this.vault.direction === 'down'))) {
           this.windows[this.playerId] = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
           this.vault = null
         }
@@ -239,20 +239,39 @@ class StartScene extends Phaser.Scene {
       if (!this.vault && !this.player[this.playerId].it){
 
         this.toBuild.windows.forEach((window) => {
-          if (this.space.isDown && this.player[this.playerId].body.x < window.x && this.player[this.playerId].body.x > (window.x - 110) && this.player[this.playerId].body.y < (window.y + 15) && this.player[this.playerId].body.y > (window.y - 65)) {
-            this.vault = {x: window.x + 70, y: window.y}
-            this.collideDuringVault = false
+          if (window.direction === 1) {
+            if (this.space.isDown && this.player[this.playerId].body.x < window.x && this.player[this.playerId].body.x > (window.x - 110) && this.player[this.playerId].body.y < (window.y + 15) && this.player[this.playerId].body.y > (window.y - 65)) {
+              this.vault = {x: window.x + 70, y: window.y, direction: 'right'}
+              this.collideDuringVault = false
+            }
+            else if (this.space.isDown && this.player[this.playerId].body.x < (window.x + 110) && this.player[this.playerId].body.x > window.x && this.player[this.playerId].body.y < (window.y + 15) && this.player[this.playerId].body.y > (window.y - 65)) {
+              this.vault = {x: window.x - 70, y: window.y, direction: 'left'}
+              this.collideDuringVault = false
+            }
           }
-          if (this.space.isDown && this.player[this.playerId].body.x < (window.x + 110) && this.player[this.playerId].body.x > window.x && this.player[this.playerId].body.y < (window.y + 15) && this.player[this.playerId].body.y > (window.y - 65)) {
-            this.vault = {x: window.x - 70, y: window.y}
-            this.collideDuringVault = false
+          if (window.direction === -1) {
+            if (this.space.isDown && this.player[this.playerId].body.y < window.y && this.player[this.playerId].body.y > (window.y - 110) && this.player[this.playerId].body.x < (window.x + 15) && this.player[this.playerId].body.x > (window.x - 65)) {
+              this.vault = {x: window.x, y: window.y + 70, direction: 'down'}
+              this.collideDuringVault = false
+            }
+            else if (this.space.isDown && this.player[this.playerId].body.y < (window.y + 110) && this.player[this.playerId].body.y > window.y && this.player[this.playerId].body.x < (window.x + 15) && this.player[this.playerId].body.x > (window.x - 65)) {
+              this.vault = {x: window.x, y: window.y - 70, direction: 'up'}
+              this.collideDuringVault = false
+            }
           }
         })
 
         if (this.cursors.up.isDown && !this.cursors.down.isDown) {
           this.player[this.playerId].body.setVelocityY(-survivorSpeed)
+          this.player[this.playerId].momentumDown = 0
+          this.player[this.playerId].momentumUp += 1
         } else if (this.cursors.down.isDown && !this.cursors.up.isDown) {
           this.player[this.playerId].body.setVelocityY(survivorSpeed)
+          this.player[this.playerId].momentumUp = 0
+          this.player[this.playerId].momentumDown += 1
+        } else {
+          this.player[this.playerId].momentumUp = 0
+          this.player[this.playerId].momentumDown = 0
         }
 
         if (this.cursors.left.isDown && !this.cursors.right.isDown) {
