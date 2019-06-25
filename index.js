@@ -47,8 +47,8 @@ io.on('connection',function(socket){
         let it
         socket.player = {
             id: uuidv1(),
-            x: randomInt(100,2300),
-            y: randomInt(100,2300),
+            x: randomInt(100,1150),
+            y: randomInt(100,1150),
             room: room
         };
         for (let gameRoom in server.rooms) {

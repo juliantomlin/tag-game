@@ -19,7 +19,7 @@ class StartScene extends Phaser.Scene {
     Client.askNewPlayer()
     this.zoom = .66
     this.background = this.add.tileSprite(0,0,2400*this.zoom,2400*this.zoom, 'ground').setOrigin(0, 0)
-    this.cameras.main.setBounds(-400, -400, 3200, 3200)
+    this.cameras.main.setBounds(-500, -500, 2400, 2400)
     this.physics.world.setBounds(0, 0, 2400*this.zoom, 2400*this.zoom)
 
     //this.player = this.physics.add.sprite(50, 350, "ball").setScale(.3,.3)
