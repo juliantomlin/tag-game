@@ -28,7 +28,6 @@ io.on('connection',function(socket){
         if (server.rooms[0] && server.rooms[0].players <= 4){
             socket.join(server.rooms[0].id)
             server.rooms[0].players ++
-            console.log(server.rooms[0].players)
             io.emit('roomAssign', server.rooms[0])
         } else if (server.rooms[1]) {
             socket.join(server.rooms[1].id)
@@ -39,6 +38,7 @@ io.on('connection',function(socket){
     })
 
     socket.on('newplayer',function(room){
+        console.log(room)
         socket.player = {
             id: server.lastPlayderID++,
             x: randomInt(100,400),
@@ -56,6 +56,15 @@ io.on('connection',function(socket){
 
         socket.on('playerHit', function(data){
             io.to(room).emit('hitConfirm', data.id)
+        })
+
+        socket.on('itLeft', function() {
+            for (let gameRoom in server.rooms) {
+                if (server.rooms[gameRoom].id === room){
+                    server.rooms.splice(gameRoom, 1)
+                }
+            }
+            socket.leave(room)
         })
 
         socket.on('disconnect',function(){

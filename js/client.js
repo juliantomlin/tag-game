@@ -20,8 +20,11 @@ Client.sendPosition = function(x,y){
 };
 
 Client.hitConfirm = function(id) {
-  console.log('did hit confirm happen')
   Client.socket.emit('playerHit', {id:id, room: Client.room.id})
+}
+
+Client.itLeft = function() {
+  Client.socket.emit('itLeft')
 }
 
 Client.socket.on('roomAssign', function(data){

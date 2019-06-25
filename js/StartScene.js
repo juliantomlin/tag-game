@@ -134,6 +134,11 @@ class StartScene extends Phaser.Scene {
     }
 
     this.removePlayer = function(id){
+      if (this.player[id].it) {
+        Client.itLeft()
+        this.scene.stop()
+        this.scene.start('MainMenu')
+      }
       this.player[id].destroy();
       delete this.playerMap[id];
     }
