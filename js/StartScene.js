@@ -34,18 +34,64 @@ class StartScene extends Phaser.Scene {
     this.window = this.physics.add.staticGroup()
     this.walls = this.physics.add.staticGroup()
     this.players = this.physics.add.staticGroup()
+    let firstRotation
+    let secondRotation
+    let thirdRotation
+    let forthRotation
 
-    this.toBuild = Generate.tile(0,0,1,2)
-    this.view = this.view.concat(Generate.tile(0,0,1,2).vision)
-    this.toBuild.windows = this.toBuild.windows.concat(Generate.tile(1,0,1,3).windows)
-    this.toBuild.walls = this.toBuild.walls.concat(Generate.tile(1,0,1,3).walls)
-    this.view = this.view.concat(Generate.tile(1,0,1,3).vision)
-    this.toBuild.windows = this.toBuild.windows.concat(Generate.tile(0,1,1,4).windows)
-    this.toBuild.walls = this.toBuild.walls.concat(Generate.tile(0,1,1,4).walls)
-    this.view = this.view.concat(Generate.tile(0,1,1,4).vision)
-    this.toBuild.windows = this.toBuild.windows.concat(Generate.tile(1,1,1,1).windows)
-    this.toBuild.walls = this.toBuild.walls.concat(Generate.tile(1,1,1,1).walls)
-    this.view = this.view.concat(Generate.tile(1,1,1,1).vision)
+
+    if ((Client.room.seed % 100) <= 24) {
+      firstRotation = 1
+    } else if ((Client.room.seed % 100) <= 49) {
+      firstRotation = 2
+    } else if ((Client.room.seed % 100) <= 74) {
+      firstRotation = 3
+    } else {
+      firstRotation = 4
+    }
+
+
+    if (((Client.room.seed * firstRotation * 3) % 100) <= 24) {
+      secondRotation = 1
+    } else if (((Client.room.seed * firstRotation * 3) % 100) <= 49) {
+      secondRotation = 2
+    } else if (((Client.room.seed * firstRotation * 3) % 100) <= 74) {
+      secondRotation = 3
+    } else {
+      secondRotation = 4
+    }
+
+    if (((Client.room.seed * secondRotation * 7) % 100) <= 24) {
+      thirdRotation = 1
+    } else if (((Client.room.seed * secondRotation * 7) % 100) <= 49) {
+      thirdRotation = 2
+    } else if (((Client.room.seed * secondRotation * 7) % 100) <= 74) {
+      thirdRotation = 3
+    } else {
+      thirdRotation = 4
+    }
+
+    if (((Client.room.seed * thirdRotation * 11) % 100) <= 24) {
+      forthRotation = 1
+    } else if (((Client.room.seed * thirdRotation * 11) % 100) <= 49) {
+      forthRotation = 2
+    } else if (((Client.room.seed * thirdRotation * 11) % 100) <= 74) {
+      forthRotation = 3
+    } else {
+      forthRotation = 4
+    }
+
+    this.toBuild = Generate.tile(0,0,1,firstRotation)
+    this.view = this.view.concat(Generate.tile(0,0,1,firstRotation).vision)
+    this.toBuild.windows = this.toBuild.windows.concat(Generate.tile(1,0,1,secondRotation).windows)
+    this.toBuild.walls = this.toBuild.walls.concat(Generate.tile(1,0,1,secondRotation).walls)
+    this.view = this.view.concat(Generate.tile(1,0,1,secondRotation).vision)
+    this.toBuild.windows = this.toBuild.windows.concat(Generate.tile(0,1,1,thirdRotation).windows)
+    this.toBuild.walls = this.toBuild.walls.concat(Generate.tile(0,1,1,thirdRotation).walls)
+    this.view = this.view.concat(Generate.tile(0,1,1,thirdRotation).vision)
+    this.toBuild.windows = this.toBuild.windows.concat(Generate.tile(1,1,1,forthRotation).windows)
+    this.toBuild.walls = this.toBuild.walls.concat(Generate.tile(1,1,1,forthRotation).walls)
+    this.view = this.view.concat(Generate.tile(1,1,1,forthRotation).vision)
 
     this.toBuild.windows.forEach((window) => {
       this.window.create(window.x, window.y, "window").setScale(window.width, window.length).refreshBody()
@@ -141,9 +187,6 @@ class StartScene extends Phaser.Scene {
     }
 
     this.shutDownRoom = function() {
-      // for (let id in this.player){
-      //   this.player[id].destroy()
-      // }
       this.scene.stop()
       this.scene.start('MainMenu')
     }
