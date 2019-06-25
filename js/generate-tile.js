@@ -3,7 +3,7 @@ const Generate = {}
 
 const max = 800
 
-Generate.tile = function (tileX, tileY, tileId, rotation) {
+Generate.tile = function (tileX, tileY, tileId) {
   //declare all variables
   let [direction, x, y, width, length, point1, point2, thick1, thick2, vault, windowNumber, wallNumber] = ''
   let windows = []
@@ -47,8 +47,33 @@ Generate.tile = function (tileX, tileY, tileId, rotation) {
     thick2 =[.15,.1,.1,1.5,1.8,.1,.1,.1,1.4,1.4]
     vault = [-1]
   }
+  if (tileId === 5) {
+    //blank tile
+    [windowNumber, wallNumber] = [0,4]
+    point1 = [250,400,400,550,250,250,400,400,400,400,550,550]
+    point2 = [230,250,550,570,80,380,152.5,347.5,452.5,647.5,420,720]
+    thick1 =[.1,.1,.1,.1]
+    thick2 =[2,1.3,1.3,2]
+    vault = []
+  }
 
   //mutate points baised on rotation
+  let rotation
+
+  let prime = [[3,5,7],[11,17,19],[23,29,31]]
+  let seedRandom = Client.room.seed * prime[tileX][tileY]
+
+
+  if ((seedRandom % 100) <= 24) {
+    rotation = 1
+  } else if ((seedRandom % 100) <= 49) {
+    rotation = 2
+  } else if ((seedRandom % 100) <= 74) {
+    rotation = 3
+  } else {
+    rotation = 4
+  }
+
   if (rotation === 1){
     x = point1
     y = point2

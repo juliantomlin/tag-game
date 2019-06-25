@@ -17,9 +17,9 @@ class StartScene extends Phaser.Scene {
 
   create() {
     Client.askNewPlayer()
-    this.background = this.add.tileSprite(0,0,1600,1600, 'ground').setOrigin(0, 0)
-    this.cameras.main.setBounds(-400, -400, 2400, 2400)
-    this.physics.world.setBounds(0, 0, 1600, 1600)
+    this.background = this.add.tileSprite(0,0,2400,2400, 'ground').setOrigin(0, 0)
+    this.cameras.main.setBounds(-400, -400, 3200, 3200)
+    this.physics.world.setBounds(0, 0, 2400, 2400)
 
     //this.player = this.physics.add.sprite(50, 350, "ball").setScale(.3,.3)
     this.windows = {}
@@ -29,69 +29,46 @@ class StartScene extends Phaser.Scene {
     this.itChosen = false
     this.vision = this.add.graphics(0,0)
     this.mask = this.vision.createGeometryMask()
-    this.view = [[[0,0],[1600,0]],[[1600,0],[1600,1600]],[[1600,1600],[0,1600]],[[0,1600],[0,0]]]
+    this.view = [[[0,0],[3200,0]],[[3200,0],[3200,3200]],[[3200,3200],[0,3200]],[[0,3200],[0,0]]]
 
     this.window = this.physics.add.staticGroup()
     this.walls = this.physics.add.staticGroup()
     this.players = this.physics.add.staticGroup()
-    let firstRotation
-    let secondRotation
-    let thirdRotation
-    let forthRotation
 
+    this.toBuild = Generate.tile(0,0,5)
+    this.view = this.view.concat(Generate.tile(0,0,5).vision)
 
-    if ((Client.room.seed % 100) <= 24) {
-      firstRotation = 1
-    } else if ((Client.room.seed % 100) <= 49) {
-      firstRotation = 2
-    } else if ((Client.room.seed % 100) <= 74) {
-      firstRotation = 3
-    } else {
-      firstRotation = 4
-    }
+    this.toBuild.windows = this.toBuild.windows.concat(Generate.tile(1,0,2).windows)
+    this.toBuild.walls = this.toBuild.walls.concat(Generate.tile(1,0,2).walls)
+    this.view = this.view.concat(Generate.tile(1,0,2).vision)
 
+    this.toBuild.windows = this.toBuild.windows.concat(Generate.tile(2,0,2).windows)
+    this.toBuild.walls = this.toBuild.walls.concat(Generate.tile(2,0,2).walls)
+    this.view = this.view.concat(Generate.tile(2,0,2).vision)
 
-    if (((Client.room.seed * firstRotation * 3) % 100) <= 24) {
-      secondRotation = 1
-    } else if (((Client.room.seed * firstRotation * 3) % 100) <= 49) {
-      secondRotation = 2
-    } else if (((Client.room.seed * firstRotation * 3) % 100) <= 74) {
-      secondRotation = 3
-    } else {
-      secondRotation = 4
-    }
+    this.toBuild.windows = this.toBuild.windows.concat(Generate.tile(0,1,2).windows)
+    this.toBuild.walls = this.toBuild.walls.concat(Generate.tile(0,1,2).walls)
+    this.view = this.view.concat(Generate.tile(0,1,2).vision)
 
-    if (((Client.room.seed * secondRotation * 7) % 100) <= 24) {
-      thirdRotation = 1
-    } else if (((Client.room.seed * secondRotation * 7) % 100) <= 49) {
-      thirdRotation = 2
-    } else if (((Client.room.seed * secondRotation * 7) % 100) <= 74) {
-      thirdRotation = 3
-    } else {
-      thirdRotation = 4
-    }
+    this.toBuild.windows = this.toBuild.windows.concat(Generate.tile(1,1,2).windows)
+    this.toBuild.walls = this.toBuild.walls.concat(Generate.tile(1,1,2).walls)
+    this.view = this.view.concat(Generate.tile(1,1,2).vision)
 
-    if (((Client.room.seed * thirdRotation * 11) % 100) <= 24) {
-      forthRotation = 1
-    } else if (((Client.room.seed * thirdRotation * 11) % 100) <= 49) {
-      forthRotation = 2
-    } else if (((Client.room.seed * thirdRotation * 11) % 100) <= 74) {
-      forthRotation = 3
-    } else {
-      forthRotation = 4
-    }
+    this.toBuild.windows = this.toBuild.windows.concat(Generate.tile(2,1,2).windows)
+    this.toBuild.walls = this.toBuild.walls.concat(Generate.tile(2,1,2).walls)
+    this.view = this.view.concat(Generate.tile(2,1,2).vision)
 
-    this.toBuild = Generate.tile(0,0,4,1)
-    this.view = this.view.concat(Generate.tile(0,0,4,1).vision)
-    this.toBuild.windows = this.toBuild.windows.concat(Generate.tile(1,0,2,secondRotation).windows)
-    this.toBuild.walls = this.toBuild.walls.concat(Generate.tile(1,0,2,secondRotation).walls)
-    this.view = this.view.concat(Generate.tile(1,0,2,secondRotation).vision)
-    this.toBuild.windows = this.toBuild.windows.concat(Generate.tile(0,1,2,thirdRotation).windows)
-    this.toBuild.walls = this.toBuild.walls.concat(Generate.tile(0,1,2,thirdRotation).walls)
-    this.view = this.view.concat(Generate.tile(0,1,2,thirdRotation).vision)
-    this.toBuild.windows = this.toBuild.windows.concat(Generate.tile(1,1,2,forthRotation).windows)
-    this.toBuild.walls = this.toBuild.walls.concat(Generate.tile(1,1,2,forthRotation).walls)
-    this.view = this.view.concat(Generate.tile(1,1,2,forthRotation).vision)
+    this.toBuild.windows = this.toBuild.windows.concat(Generate.tile(0,2,2).windows)
+    this.toBuild.walls = this.toBuild.walls.concat(Generate.tile(0,2,2).walls)
+    this.view = this.view.concat(Generate.tile(0,2,2).vision)
+
+    this.toBuild.windows = this.toBuild.windows.concat(Generate.tile(1,2,2).windows)
+    this.toBuild.walls = this.toBuild.walls.concat(Generate.tile(1,2,2).walls)
+    this.view = this.view.concat(Generate.tile(1,2,2).vision)
+
+    this.toBuild.windows = this.toBuild.windows.concat(Generate.tile(2,2,2).windows)
+    this.toBuild.walls = this.toBuild.walls.concat(Generate.tile(2,2,2).walls)
+    this.view = this.view.concat(Generate.tile(2,2,2).vision)
 
     this.toBuild.windows.forEach((window) => {
       this.window.create(window.x, window.y, "window").setScale(window.width, window.length).refreshBody()
@@ -394,7 +371,7 @@ class StartScene extends Phaser.Scene {
     Client.sendPosition(this.player[this.playerId].body.x, this.player[this.playerId].body.y)
 
 
-    let visibility = VisibilityPolygon.computeViewport([this.player[this.playerId].body.x+25, this.player[this.playerId].body.y+25], this.view, [0,0], [2000,2000])
+    let visibility = VisibilityPolygon.computeViewport([this.player[this.playerId].body.x+25, this.player[this.playerId].body.y+25], this.view, [0,0], [2400,2400])
 
 
     this.vision.clear();

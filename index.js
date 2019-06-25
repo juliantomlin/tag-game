@@ -18,7 +18,7 @@ server.rooms = []
 io.on('connection',function(socket){
 
     socket.on('newRoom', function() {
-        let roomInfo = {id: uuidv1(), seed: Math.round(Math.random()*100), it: false, players: 1}
+        let roomInfo = {id: uuidv1(), seed: Math.round(Math.random()*1000), it: false, players: 1}
         server.rooms.push(roomInfo)
         socket.join(roomInfo.id)
         socket.emit('roomAssign', roomInfo)
