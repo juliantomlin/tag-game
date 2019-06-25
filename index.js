@@ -12,40 +12,54 @@ app.get('/', function(req, res) {
   res.sendFile(__dirname + '/index.html');
 });
 
-server.lastPlayderID = 0;
+server.lastPlayderID = 1;
 server.rooms = []
 
 io.on('connection',function(socket){
 
     socket.on('newRoom', function() {
-        let roomInfo = {id: uuidv1(), seed: Math.round(Math.random()*100), it: true, players: 1}
+        let roomInfo = {id: uuidv1(), seed: Math.round(Math.random()*100), it: false, players: 1}
         server.rooms.push(roomInfo)
         socket.join(roomInfo.id)
-        io.emit('roomAssign', roomInfo)
+        socket.emit('roomAssign', roomInfo)
     })
 
     socket.on('joinRoom', function(){
-        if (server.rooms[0] && server.rooms[0].players <= 4){
-            socket.join(server.rooms[0].id)
-            server.rooms[0].players ++
-            io.emit('roomAssign', server.rooms[0])
-        } else if (server.rooms[1]) {
-            socket.join(server.rooms[1].id)
-            server.rooms[1].players ++
-            io.emit('roomAssign', server.rooms[1])
-            server.rooms.shift()
+        if (server.rooms.length === 0){
+            socket.emit('noRooms')
+        } else {
+            if (server.rooms[0] && server.rooms[0].players <= 4){
+                socket.join(server.rooms[0].id)
+                server.rooms[0].players ++
+                socket.emit('roomAssign', server.rooms[0])
+            } else if (server.rooms[1]) {
+                socket.join(server.rooms[1].id)
+                server.rooms[1].players ++
+                socket.emit('roomAssign', server.rooms[1])
+                server.rooms.shift()
+            } else {
+                socket.emit('noRooms')
+            }
         }
     })
 
     socket.on('newplayer',function(room){
-        console.log(room)
+        let it
         socket.player = {
-            id: server.lastPlayderID++,
+            id: uuidv1(),
             x: randomInt(100,400),
             y: randomInt(100,400),
             room: room
         };
-        socket.emit('allplayers',getAllPlayers(room));
+        for (let gameRoom in server.rooms) {
+            if (server.rooms[gameRoom].id === room && !server.rooms[gameRoom].it){
+                server.rooms[gameRoom].it = socket.player.id
+                it = socket.player.id
+            } else if (server.rooms[gameRoom].id === room && server.rooms[gameRoom].it){
+                it = server.rooms[gameRoom].it
+            }
+        }
+        socket.emit('allplayers',{players: getAllPlayers(room), userId: socket.player.id, itId: it});
         socket.broadcast.to(room).emit('newplayer',socket.player);
 
         socket.on('move',function(data){

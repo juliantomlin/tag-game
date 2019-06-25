@@ -19,8 +19,7 @@ class MainMenu extends Phaser.Scene {
         .setInteractive()
         .on('pointerdown', () => {
           Client.joinRoom()
-          this.scene.stop()
-          this.scene.start('StartScene')
+
         })
       )
     texts.push(
@@ -30,12 +29,18 @@ class MainMenu extends Phaser.Scene {
         .setInteractive()
         .on('pointerdown', () => {
           Client.makeNewRoom()
-          this.scene.stop()
-          this.scene.start('StartScene')
         })
       )
+    this.connectToRoom = function() {
+      this.scene.stop()
+      this.scene.start('StartScene')
+    }
+
+    this.noRooms = function() {
+      alert('no games available')
+    }
   }
 
 }
 
-//const MainMenu = new MainMenu()
+const MainMenu2 = new MainMenu()

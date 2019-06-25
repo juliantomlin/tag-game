@@ -16,6 +16,7 @@ class StartScene extends Phaser.Scene {
   }
 
   create() {
+    Client.askNewPlayer()
     this.background = this.add.tileSprite(0,0,1600,1600, 'ground').setOrigin(0, 0)
     this.cameras.main.setBounds(-400, -400, 2400, 2400)
     this.physics.world.setBounds(0, 0, 1600, 1600)
@@ -76,12 +77,11 @@ class StartScene extends Phaser.Scene {
       }
     }
 
-    this.addNewPlayer = function(id, x, y, user) {
+    this.addNewPlayer = function(id, x, y, user, it) {
       if (!user) {
-        if (!this.itChosen) {
+        if (it) {
           this.player[id] = this.players.create(x, y, "it").setScale(.4,.4).refreshBody()
           this.player[id].it = true
-          this.itChosen = true
           //this.player[id].setCircle((this.player[id].width/2))
         }else{
           this.player[id] = this.players.create(x, y, "ball").setScale(.3,.3).refreshBody()
@@ -102,10 +102,9 @@ class StartScene extends Phaser.Scene {
       }
       else {
         this.playerId = id
-        if (!this.itChosen) {
+        if (it) {
           this.player[id] = this.physics.add.sprite(x, y, "it").setScale(.4,.4).setBounce(.1)
           this.player[id].it = true
-          this.itChosen = true
           //this.player[id].setCircle(this.player[id].width/2)
         }else{
           this.player[id] = this.physics.add.sprite(x, y, "ball").setScale(.3,.3).setBounce(.1)
@@ -136,11 +135,17 @@ class StartScene extends Phaser.Scene {
     this.removePlayer = function(id){
       if (this.player[id].it) {
         Client.itLeft()
-        this.scene.stop()
-        this.scene.start('MainMenu')
+      } else {
+        this.player[id].destroy();
       }
-      this.player[id].destroy();
-      delete this.playerMap[id];
+    }
+
+    this.shutDownRoom = function() {
+      // for (let id in this.player){
+      //   this.player[id].destroy()
+      // }
+      this.scene.stop()
+      this.scene.start('MainMenu')
     }
 
     this.receiveDamage = function(id) {
@@ -157,7 +162,7 @@ class StartScene extends Phaser.Scene {
 
     }
 
-    Client.askNewPlayer()
+    console.log(this.player, this.playerId)
   }
 
   killMomentum (player1, player2) {
