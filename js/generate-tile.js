@@ -124,13 +124,13 @@ Generate.tile = function (tileX, tileY) {
 
   //construct the arrays of map components
   for (let i = 0; i < windowNumber; i++){
-    windows.push({x:x[i]+max*tileX, y:y[i]+max*tileY, width:width[i], length:length[i], direction: direction[i]})
+    windows.push({x:(x[i]+max*tileX)*StartScene2.zoom, y:(y[i]+max*tileY)*StartScene2.zoom, width:width[i]*StartScene2.zoom, length:length[i]*StartScene2.zoom, direction: direction[i]})
   }
   for (let i = windowNumber; i < wallNumber + windowNumber; i++){
-    walls.push({x:x[i]+max*tileX, y:y[i]+max*tileY, width:width[i], length:length[i]})
+    walls.push({x:(x[i]+max*tileX)*StartScene2.zoom, y:(y[i]+max*tileY)*StartScene2.zoom, width:width[i]*StartScene2.zoom, length:length[i]*StartScene2.zoom})
   }
   for (let i = windowNumber + wallNumber; i < point1.length; i += 2){
-    vision.push([[x[i]+max*tileX,y[i]+max*tileY],[x[i+1]+max*tileX,y[i+1]+max*tileY]])
+    vision.push([[(x[i]+max*tileX)*StartScene2.zoom,(y[i]+max*tileY)*StartScene2.zoom],[(x[i+1]+max*tileX)*StartScene2.zoom,(y[i+1]+max*tileY)*StartScene2.zoom]])
   }
   return { windows, walls, vision}
 }

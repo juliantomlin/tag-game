@@ -1,4 +1,4 @@
-const survivorSpeed = 250
+const survivorSpeed = 250 * .66
 const fast_vault_req = 25
 const slow_vault_pen = .4
 
@@ -17,9 +17,10 @@ class StartScene extends Phaser.Scene {
 
   create() {
     Client.askNewPlayer()
-    this.background = this.add.tileSprite(0,0,2400,2400, 'ground').setOrigin(0, 0)
+    this.zoom = .66
+    this.background = this.add.tileSprite(0,0,2400*this.zoom,2400*this.zoom, 'ground').setOrigin(0, 0)
     this.cameras.main.setBounds(-400, -400, 3200, 3200)
-    this.physics.world.setBounds(0, 0, 2400, 2400)
+    this.physics.world.setBounds(0, 0, 2400*this.zoom, 2400*this.zoom)
 
     //this.player = this.physics.add.sprite(50, 350, "ball").setScale(.3,.3)
     this.windows = {}
@@ -29,7 +30,7 @@ class StartScene extends Phaser.Scene {
     this.itChosen = false
     this.vision = this.add.graphics(0,0)
     this.mask = this.vision.createGeometryMask()
-    this.view = [[[0,0],[3200,0]],[[3200,0],[3200,3200]],[[3200,3200],[0,3200]],[[0,3200],[0,0]]]
+    this.view = [[[0,0],[3200*this.zoom,0]],[[3200*this.zoom,0],[3200*this.zoom,3200]],[[3200*this.zoom,3200*this.zoom],[0,3200*this.zoom]],[[0,3200*this.zoom],[0,0]]]
 
     this.window = this.physics.add.staticGroup()
     this.walls = this.physics.add.staticGroup()
@@ -103,11 +104,11 @@ class StartScene extends Phaser.Scene {
     this.addNewPlayer = function(id, x, y, user, it) {
       if (!user) {
         if (it) {
-          this.player[id] = this.players.create(x, y, "it").setScale(.4,.4).refreshBody()
+          this.player[id] = this.players.create(x, y, "it").setScale(.4*this.zoom,.4*this.zoom).refreshBody()
           this.player[id].it = true
           //this.player[id].setCircle((this.player[id].width/2))
         }else{
-          this.player[id] = this.players.create(x, y, "ball").setScale(.3,.3).refreshBody()
+          this.player[id] = this.players.create(x, y, "ball").setScale(.3*this.zoom,.3*this.zoom).refreshBody()
           this.player[id].it = false
           //this.player[id].setCircle((this.player[id].width/2))
         }
@@ -126,11 +127,11 @@ class StartScene extends Phaser.Scene {
       else {
         this.playerId = id
         if (it) {
-          this.player[id] = this.physics.add.sprite(x, y, "it").setScale(.4,.4).setBounce(.1)
+          this.player[id] = this.physics.add.sprite(x, y, "it").setScale(.4*this.zoom,.4*this.zoom).setBounce(.1)
           this.player[id].it = true
           //this.player[id].setCircle(this.player[id].width/2)
         }else{
-          this.player[id] = this.physics.add.sprite(x, y, "ball").setScale(.3,.3).setBounce(.1)
+          this.player[id] = this.physics.add.sprite(x, y, "ball").setScale(.3*this.zoom,.3*this.zoom).setBounce(.1)
           this.player[id].it = false
           //this.player[id].setCircle(this.player[id].width/2)
         }
@@ -255,11 +256,11 @@ class StartScene extends Phaser.Scene {
           vaultSpeed = survivorSpeed * slow_vault_pen
         }
         this.physics.moveToObject(this.player[this.playerId], this.vault, vaultSpeed)
-        if ((this.player[this.playerId].body.x > (this.vault.x - 40) && this.vault.direction === 'right') || (this.player[this.playerId].body.x < (this.vault.x - 5) && this.vault.direction === 'left') || (this.player[this.playerId].body.y < (this.vault.y - 5) && this.vault.direction === 'up') || (this.player[this.playerId].body.y > (this.vault.y - 40) && this.vault.direction === 'down')){
+        if ((this.player[this.playerId].body.x > (this.vault.x - 40*this.zoom) && this.vault.direction === 'right') || (this.player[this.playerId].body.x < (this.vault.x - 5*this.zoom) && this.vault.direction === 'left') || (this.player[this.playerId].body.y < (this.vault.y - 5*this.zoom) && this.vault.direction === 'up') || (this.player[this.playerId].body.y > (this.vault.y - 40*this.zoom) && this.vault.direction === 'down')){
           this.windows[this.playerId] = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
           this.vault = null
         }
-        if (this.vault && this.collideDuringVault && ((this.player[this.playerId].body.x < (this.vault.x - 40) && this.vault.direction === 'right') || (this.player[this.playerId].body.x > (this.vault.x - 5) && this.vault.direction === 'left') || (this.player[this.playerId].body.y > (this.vault.y - 5) && this.vault.direction === 'up') || (this.player[this.playerId].body.y < (this.vault.y - 40) && this.vault.direction === 'down'))) {
+        if (this.vault && this.collideDuringVault && ((this.player[this.playerId].body.x < (this.vault.x - 40*this.zoom) && this.vault.direction === 'right') || (this.player[this.playerId].body.x > (this.vault.x - 5*this.zoom) && this.vault.direction === 'left') || (this.player[this.playerId].body.y > (this.vault.y - 5*this.zoom) && this.vault.direction === 'up') || (this.player[this.playerId].body.y < (this.vault.y - 40*this.zoom) && this.vault.direction === 'down'))) {
           this.windows[this.playerId] = this.physics.add.collider(this.player[this.playerId], this.walls, this.killMomentum, null, this)
           this.vault = null
         }
@@ -270,22 +271,22 @@ class StartScene extends Phaser.Scene {
 
         this.toBuild.windows.forEach((window) => {
           if (window.direction === 1) {
-            if (this.space.isDown && this.player[this.playerId].body.x < window.x && this.player[this.playerId].body.x > (window.x - 110) && this.player[this.playerId].body.y < (window.y + 15) && this.player[this.playerId].body.y > (window.y - 65)) {
-              this.vault = {x: window.x + 70, y: window.y, direction: 'right'}
+            if (this.space.isDown && this.player[this.playerId].body.x < window.x && this.player[this.playerId].body.x > (window.x - 110*this.zoom) && this.player[this.playerId].body.y < (window.y + 15*this.zoom) && this.player[this.playerId].body.y > (window.y - 65*this.zoom)) {
+              this.vault = {x: window.x + 70*this.zoom, y: window.y, direction: 'right'}
               this.collideDuringVault = false
             }
-            else if (this.space.isDown && this.player[this.playerId].body.x < (window.x + 110) && this.player[this.playerId].body.x > window.x && this.player[this.playerId].body.y < (window.y + 15) && this.player[this.playerId].body.y > (window.y - 65)) {
-              this.vault = {x: window.x - 70, y: window.y, direction: 'left'}
+            else if (this.space.isDown && this.player[this.playerId].body.x < (window.x + 110*this.zoom) && this.player[this.playerId].body.x > window.x && this.player[this.playerId].body.y < (window.y + 15*this.zoom) && this.player[this.playerId].body.y > (window.y - 65*this.zoom)) {
+              this.vault = {x: window.x - 70*this.zoom, y: window.y, direction: 'left'}
               this.collideDuringVault = false
             }
           }
           if (window.direction === -1) {
-            if (this.space.isDown && this.player[this.playerId].body.y < window.y && this.player[this.playerId].body.y > (window.y - 110) && this.player[this.playerId].body.x < (window.x + 15) && this.player[this.playerId].body.x > (window.x - 65)) {
-              this.vault = {x: window.x, y: window.y + 70, direction: 'down'}
+            if (this.space.isDown && this.player[this.playerId].body.y < window.y && this.player[this.playerId].body.y > (window.y - 110*this.zoom) && this.player[this.playerId].body.x < (window.x + 15*this.zoom) && this.player[this.playerId].body.x > (window.x - 65*this.zoom)) {
+              this.vault = {x: window.x, y: window.y + 70*this.zoom, direction: 'down'}
               this.collideDuringVault = false
             }
-            else if (this.space.isDown && this.player[this.playerId].body.y < (window.y + 110) && this.player[this.playerId].body.y > window.y && this.player[this.playerId].body.x < (window.x + 15) && this.player[this.playerId].body.x > (window.x - 65)) {
-              this.vault = {x: window.x, y: window.y - 70, direction: 'up'}
+            else if (this.space.isDown && this.player[this.playerId].body.y < (window.y + 110*this.zoom) && this.player[this.playerId].body.y > window.y && this.player[this.playerId].body.x < (window.x + 15*this.zoom) && this.player[this.playerId].body.x > (window.x - 65*this.zoom)) {
+              this.vault = {x: window.x, y: window.y - 70*this.zoom, direction: 'up'}
               this.collideDuringVault = false
             }
           }
@@ -371,7 +372,7 @@ class StartScene extends Phaser.Scene {
     Client.sendPosition(this.player[this.playerId].body.x, this.player[this.playerId].body.y)
 
 
-    let visibility = VisibilityPolygon.computeViewport([this.player[this.playerId].body.x+25, this.player[this.playerId].body.y+25], this.view, [0,0], [2400,2400])
+    let visibility = VisibilityPolygon.computeViewport([this.player[this.playerId].body.x+25*this.zoom, this.player[this.playerId].body.y+25*this.zoom], this.view, [0,0], [2400*this.zoom,2400*this.zoom])
 
 
     this.vision.clear();
