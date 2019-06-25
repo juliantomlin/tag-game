@@ -2,8 +2,12 @@
 const Generate = {}
 
 const max = 800
+let prime = [[3,5,7],[11,17,19],[23,29,31]]
+let tilePrime = [[37, 41, 43],[47, 53, 59],[61, 67, 71]]
 
-Generate.tile = function (tileX, tileY, tileId) {
+
+
+Generate.tile = function (tileX, tileY) {
   //declare all variables
   let [direction, x, y, width, length, point1, point2, thick1, thick2, vault, windowNumber, wallNumber] = ''
   let windows = []
@@ -11,6 +15,22 @@ Generate.tile = function (tileX, tileY, tileId) {
   let vision = []
 
   //select points based on tile type
+  let tileId
+  let seedRandomTile = Client.room.seed * prime[tileX][tileY]
+
+  if ((seedRandomTile % 100) <= 19) {
+    tileId = 1
+  } else if ((seedRandomTile % 100) <= 39) {
+    tileId = 2
+  } else if ((seedRandomTile % 100) <= 59) {
+    tileId = 3
+  } else if ((seedRandomTile % 100) <= 79){
+    tileId = 4
+  } else {
+    tileId = 5
+  }
+
+
   if (tileId === 1) {
     //t-walls
     [windowNumber, wallNumber] = [2,4]
@@ -60,7 +80,6 @@ Generate.tile = function (tileX, tileY, tileId) {
   //mutate points baised on rotation
   let rotation
 
-  let prime = [[3,5,7],[11,17,19],[23,29,31]]
   let seedRandom = Client.room.seed * prime[tileX][tileY]
 
 
