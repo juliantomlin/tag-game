@@ -81,8 +81,8 @@ class StartScene extends Phaser.Scene {
       forthRotation = 4
     }
 
-    this.toBuild = Generate.tile(0,0,2,firstRotation)
-    this.view = this.view.concat(Generate.tile(0,0,2,firstRotation).vision)
+    this.toBuild = Generate.tile(0,0,4,1)
+    this.view = this.view.concat(Generate.tile(0,0,4,1).vision)
     this.toBuild.windows = this.toBuild.windows.concat(Generate.tile(1,0,2,secondRotation).windows)
     this.toBuild.walls = this.toBuild.walls.concat(Generate.tile(1,0,2,secondRotation).walls)
     this.view = this.view.concat(Generate.tile(1,0,2,secondRotation).vision)
