@@ -16,7 +16,6 @@ class StartScene extends Phaser.Scene {
   }
 
   create() {
-    console.log(Client.room)
     this.background = this.add.tileSprite(0,0,1600,1600, 'ground').setOrigin(0, 0)
     this.cameras.main.setBounds(-400, -400, 2400, 2400)
     this.physics.world.setBounds(0, 0, 1600, 1600)

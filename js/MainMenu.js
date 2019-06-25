@@ -18,7 +18,9 @@ class MainMenu extends Phaser.Scene {
         .setOrigin(0.5,0)
         .setInteractive()
         .on('pointerdown', () => {
-          console.log('joinGame')
+          Client.joinRoom()
+          this.scene.stop()
+          this.scene.start('StartScene')
         })
       )
     texts.push(
