@@ -1,6 +1,6 @@
 const survivorSpeed = 250
 const fast_vault_req = 25
-const slow_vault_pen = .5
+const slow_vault_pen = .4
 
 class StartScene extends Phaser.Scene {
   constructor() {
@@ -240,7 +240,7 @@ class StartScene extends Phaser.Scene {
 
       //survivor vault
       if (this.vault) {
-        let vaultSpeed = survivorSpeed
+        let vaultSpeed = survivorSpeed * .8
         // let direction
         // let targetOffset
         // if (this.player[this.playerId].body.x < this.vault.x) {
