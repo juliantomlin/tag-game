@@ -12,12 +12,22 @@ Generate.tile = function (tileX, tileY, tileId, rotation) {
 
   //select points based on tile type
   if (tileId === 1) {
+    //t-walls
     [windowNumber, wallNumber] = [2,4]
     point1 = [280,590,460,590,280,280,280,280,130,280,280,430,330,595,595,595]
     point2 = [470,140,100,242.5,510,360,210,440,510,510,510,510,100,100,170,390]
     thick1 = [.15, .15, 1.8, .1, 2, .1]
     thick2 = [.4, .4, .1, 2, .1, 2]
     vault = [1, 1]
+  }
+  if (tileId === 2) {
+    //shack
+    [windowNumber, wallNumber] = [1,6]
+    point1 = [150,190,485,650,570,270,150,150,230,320,655,655,655,655,490,400,150,150,150,150,150]
+    point2 = [400,145,145,400,655,655,400,145,145,145,145,145,655,655,655,655,655,655,430,370,145]
+    thick1 =[.15,.54,2.16,.1,1.08,1.62,.1]
+    thick2 =[.4,.1,.1,3.5,.1,.1,3.5]
+    vault = [1]
   }
 
   //mutate points baised on rotation

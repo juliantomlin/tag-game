@@ -81,17 +81,17 @@ class StartScene extends Phaser.Scene {
       forthRotation = 4
     }
 
-    this.toBuild = Generate.tile(0,0,1,firstRotation)
-    this.view = this.view.concat(Generate.tile(0,0,1,firstRotation).vision)
-    this.toBuild.windows = this.toBuild.windows.concat(Generate.tile(1,0,1,secondRotation).windows)
-    this.toBuild.walls = this.toBuild.walls.concat(Generate.tile(1,0,1,secondRotation).walls)
-    this.view = this.view.concat(Generate.tile(1,0,1,secondRotation).vision)
-    this.toBuild.windows = this.toBuild.windows.concat(Generate.tile(0,1,1,thirdRotation).windows)
-    this.toBuild.walls = this.toBuild.walls.concat(Generate.tile(0,1,1,thirdRotation).walls)
-    this.view = this.view.concat(Generate.tile(0,1,1,thirdRotation).vision)
-    this.toBuild.windows = this.toBuild.windows.concat(Generate.tile(1,1,1,forthRotation).windows)
-    this.toBuild.walls = this.toBuild.walls.concat(Generate.tile(1,1,1,forthRotation).walls)
-    this.view = this.view.concat(Generate.tile(1,1,1,forthRotation).vision)
+    this.toBuild = Generate.tile(0,0,2,firstRotation)
+    this.view = this.view.concat(Generate.tile(0,0,2,firstRotation).vision)
+    this.toBuild.windows = this.toBuild.windows.concat(Generate.tile(1,0,2,secondRotation).windows)
+    this.toBuild.walls = this.toBuild.walls.concat(Generate.tile(1,0,2,secondRotation).walls)
+    this.view = this.view.concat(Generate.tile(1,0,2,secondRotation).vision)
+    this.toBuild.windows = this.toBuild.windows.concat(Generate.tile(0,1,2,thirdRotation).windows)
+    this.toBuild.walls = this.toBuild.walls.concat(Generate.tile(0,1,2,thirdRotation).walls)
+    this.view = this.view.concat(Generate.tile(0,1,2,thirdRotation).vision)
+    this.toBuild.windows = this.toBuild.windows.concat(Generate.tile(1,1,2,forthRotation).windows)
+    this.toBuild.walls = this.toBuild.walls.concat(Generate.tile(1,1,2,forthRotation).walls)
+    this.view = this.view.concat(Generate.tile(1,1,2,forthRotation).vision)
 
     this.toBuild.windows.forEach((window) => {
       this.window.create(window.x, window.y, "window").setScale(window.width, window.length).refreshBody()
