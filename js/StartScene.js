@@ -13,14 +13,15 @@ class StartScene extends Phaser.Scene {
     this.load.image("it", "assets/it.svg")
     this.load.image("wall", "assets/wall_tile.svg")
     this.load.image("window", "assets/window.svg")
+    this.load.image("gen", "assets/gen.svg")
   }
 
   create() {
     Client.askNewPlayer()
     this.zoom = .66
-    this.background = this.add.tileSprite(0,0,2400*this.zoom,2400*this.zoom, 'ground').setOrigin(0, 0)
-    this.cameras.main.setBounds(-500, -500, 2400, 2400)
-    this.physics.world.setBounds(0, 0, 2400*this.zoom, 2400*this.zoom)
+    this.background = this.add.tileSprite(0,0,3200*this.zoom,3200*this.zoom, 'ground').setOrigin(0, 0)
+    this.cameras.main.setBounds(-500, -500, 3200, 3200)
+    this.physics.world.setBounds(0, 0, 3200*this.zoom, 3200*this.zoom)
 
     //this.player = this.physics.add.sprite(50, 350, "ball").setScale(.3,.3)
     this.windows = {}
@@ -30,10 +31,11 @@ class StartScene extends Phaser.Scene {
     this.itChosen = false
     this.vision = this.add.graphics(0,0)
     this.mask = this.vision.createGeometryMask()
-    this.view = [[[0,0],[3200*this.zoom,0]],[[3200*this.zoom,0],[3200*this.zoom,3200]],[[3200*this.zoom,3200*this.zoom],[0,3200*this.zoom]],[[0,3200*this.zoom],[0,0]]]
+    this.view = [[[0,0],[4000*this.zoom,0]],[[4000*this.zoom,0],[4000*this.zoom,4000]],[[4000*this.zoom,4000*this.zoom],[0,4000*this.zoom]],[[0,4000*this.zoom],[0,0]]]
 
     this.window = this.physics.add.staticGroup()
     this.walls = this.physics.add.staticGroup()
+    this.gens = this.physics.add.staticGroup()
     this.players = this.physics.add.staticGroup()
 
     this.toBuild = Generate.tile(0,0,5)
@@ -41,35 +43,45 @@ class StartScene extends Phaser.Scene {
 
     this.toBuild.windows = this.toBuild.windows.concat(Generate.tile(1,0,2).windows)
     this.toBuild.walls = this.toBuild.walls.concat(Generate.tile(1,0,2).walls)
+    this.toBuild.gens = this.toBuild.gens.concat(Generate.tile(1,0,2).gens)
     this.view = this.view.concat(Generate.tile(1,0,2).vision)
 
     this.toBuild.windows = this.toBuild.windows.concat(Generate.tile(2,0,2).windows)
     this.toBuild.walls = this.toBuild.walls.concat(Generate.tile(2,0,2).walls)
+    this.toBuild.gens = this.toBuild.gens.concat(Generate.tile(2,0,2).gens)
     this.view = this.view.concat(Generate.tile(2,0,2).vision)
 
     this.toBuild.windows = this.toBuild.windows.concat(Generate.tile(0,1,2).windows)
     this.toBuild.walls = this.toBuild.walls.concat(Generate.tile(0,1,2).walls)
+    this.toBuild.gens = this.toBuild.gens.concat(Generate.tile(0,1,2).gens)
     this.view = this.view.concat(Generate.tile(0,1,2).vision)
 
     this.toBuild.windows = this.toBuild.windows.concat(Generate.tile(1,1,2).windows)
     this.toBuild.walls = this.toBuild.walls.concat(Generate.tile(1,1,2).walls)
+    this.toBuild.gens = this.toBuild.gens.concat(Generate.tile(1,1,2).gens)
     this.view = this.view.concat(Generate.tile(1,1,2).vision)
 
     this.toBuild.windows = this.toBuild.windows.concat(Generate.tile(2,1,2).windows)
     this.toBuild.walls = this.toBuild.walls.concat(Generate.tile(2,1,2).walls)
+    this.toBuild.gens = this.toBuild.gens.concat(Generate.tile(2,1,2).gens)
     this.view = this.view.concat(Generate.tile(2,1,2).vision)
 
     this.toBuild.windows = this.toBuild.windows.concat(Generate.tile(0,2,2).windows)
     this.toBuild.walls = this.toBuild.walls.concat(Generate.tile(0,2,2).walls)
+    this.toBuild.gens = this.toBuild.gens.concat(Generate.tile(0,2,2).gens)
     this.view = this.view.concat(Generate.tile(0,2,2).vision)
 
     this.toBuild.windows = this.toBuild.windows.concat(Generate.tile(1,2,2).windows)
     this.toBuild.walls = this.toBuild.walls.concat(Generate.tile(1,2,2).walls)
+    this.toBuild.gens = this.toBuild.gens.concat(Generate.tile(1,2,2).gens)
     this.view = this.view.concat(Generate.tile(1,2,2).vision)
 
     this.toBuild.windows = this.toBuild.windows.concat(Generate.tile(2,2,2).windows)
     this.toBuild.walls = this.toBuild.walls.concat(Generate.tile(2,2,2).walls)
+    this.toBuild.gens = this.toBuild.gens.concat(Generate.tile(2,2,2).gens)
     this.view = this.view.concat(Generate.tile(2,2,2).vision)
+
+    console.log(this.toBuild)
 
     this.toBuild.windows.forEach((window) => {
       this.window.create(window.x, window.y, "window").setScale(window.width, window.length).refreshBody()
@@ -77,6 +89,10 @@ class StartScene extends Phaser.Scene {
 
     this.toBuild.walls.forEach((wall) => {
       this.walls.create(wall.x, wall.y, "wall").setScale(wall.width, wall.length).refreshBody()
+    })
+
+    this.toBuild.gens.forEach((gen) => {
+      this.gens.create(gen.x, gen.y, "gen").setScale(.35, .35).refreshBody()
     })
 
 
@@ -112,8 +128,6 @@ class StartScene extends Phaser.Scene {
           this.player[id].it = false
           //this.player[id].setCircle((this.player[id].width/2))
         }
-        //this.player[id].body.immovable = true
-        //this.player[id].body.moves = false
         this.player[id].setMask(this.mask)
         this.player[id].id = id
         this.player[id].body.collideWorldBounds = true
@@ -135,9 +149,9 @@ class StartScene extends Phaser.Scene {
           this.player[id].it = false
           //this.player[id].setCircle(this.player[id].width/2)
         }
-        this.playerCollisionCheck = this.physics.add.image(x-1,y-1)
-        this.playerCollisionCheck.displayWidth = this.player[id].displayWidth + 2
-        this.playerCollisionCheck.displayHeight = this.player[id].displayHeight + 2
+        // this.playerCollisionCheck = this.physics.add.image(x-1,y-1)
+        // this.playerCollisionCheck.displayWidth = this.player[id].displayWidth + 2
+        // this.playerCollisionCheck.displayHeight = this.player[id].displayHeight + 2
         this.player[id].setMask(this.mask)
         this.player[id].id = id
         this.player[id].body.collideWorldBounds = true
@@ -217,8 +231,8 @@ class StartScene extends Phaser.Scene {
 
     if (this.playerId && this.player[this.playerId]) {
 
-      this.playerCollisionCheck.body.x = this.player[this.playerId].body.x - 1
-      this.playerCollisionCheck.body.y = this.player[this.playerId].body.y - 1
+      // this.playerCollisionCheck.body.x = this.player[this.playerId].body.x - 1
+      // this.playerCollisionCheck.body.y = this.player[this.playerId].body.y - 1
 
 
       this.player[this.playerId].body.setVelocity(0)
@@ -278,32 +292,35 @@ class StartScene extends Phaser.Scene {
       //survivor controlls
       if (!this.vault && !this.player[this.playerId].it){
 
-        this.toBuild.windows.forEach((window) => {
-          if (window.direction === 1) {
-            if (this.space.isDown && this.player[this.playerId].body.x < window.x && this.player[this.playerId].body.x > (window.x - 110*this.zoom) && this.player[this.playerId].body.y < (window.y + 15*this.zoom) && this.player[this.playerId].body.y > (window.y - 65*this.zoom)) {
-              this.vault = {x: window.x + 70*this.zoom, y: window.y, direction: 'right', previous:{x:window.x-70*this.zoom, y:window.y}}
-              this.collideDuringVault = false
-              this.vaultStart = true
+        //vaulting
+        if (this.space.isDown){
+          this.toBuild.windows.forEach((window) => {
+            if (window.direction === 1) {
+              if (this.player[this.playerId].body.x < window.x && this.player[this.playerId].body.x > (window.x - 110*this.zoom) && this.player[this.playerId].body.y < (window.y + 15*this.zoom) && this.player[this.playerId].body.y > (window.y - 65*this.zoom)) {
+                this.vault = {x: window.x + 70*this.zoom, y: window.y, direction: 'right', previous:{x:window.x-70*this.zoom, y:window.y}}
+                this.collideDuringVault = false
+                this.vaultStart = true
+              }
+              else if (this.player[this.playerId].body.x < (window.x + 110*this.zoom) && this.player[this.playerId].body.x > window.x && this.player[this.playerId].body.y < (window.y + 15*this.zoom) && this.player[this.playerId].body.y > (window.y - 65*this.zoom)) {
+                this.vault = {x: window.x - 70*this.zoom, y: window.y, direction: 'left', previous:{x:window.x+70*this.zoom, y:window.y}}
+                this.collideDuringVault = false
+                this.vaultStart = true
+              }
             }
-            else if (this.space.isDown && this.player[this.playerId].body.x < (window.x + 110*this.zoom) && this.player[this.playerId].body.x > window.x && this.player[this.playerId].body.y < (window.y + 15*this.zoom) && this.player[this.playerId].body.y > (window.y - 65*this.zoom)) {
-              this.vault = {x: window.x - 70*this.zoom, y: window.y, direction: 'left', previous:{x:window.x+70*this.zoom, y:window.y}}
-              this.collideDuringVault = false
-              this.vaultStart = true
+            if (window.direction === -1) {
+              if (this.player[this.playerId].body.y < window.y && this.player[this.playerId].body.y > (window.y - 110*this.zoom) && this.player[this.playerId].body.x < (window.x + 15*this.zoom) && this.player[this.playerId].body.x > (window.x - 65*this.zoom)) {
+                this.vault = {x: window.x, y: window.y + 70*this.zoom, direction: 'down', previous:{x:window.x, y:window.y-70*this.zoom}}
+                this.collideDuringVault = false
+                this.vaultStart = true
+              }
+              else if (this.player[this.playerId].body.y < (window.y + 110*this.zoom) && this.player[this.playerId].body.y > window.y && this.player[this.playerId].body.x < (window.x + 15*this.zoom) && this.player[this.playerId].body.x > (window.x - 65*this.zoom)) {
+                this.vault = {x: window.x, y: window.y - 70*this.zoom, direction: 'up', previous:{x:window.x, y:window.y+70*this.zoom}}
+                this.collideDuringVault = false
+                this.vaultStart = true
+              }
             }
-          }
-          if (window.direction === -1) {
-            if (this.space.isDown && this.player[this.playerId].body.y < window.y && this.player[this.playerId].body.y > (window.y - 110*this.zoom) && this.player[this.playerId].body.x < (window.x + 15*this.zoom) && this.player[this.playerId].body.x > (window.x - 65*this.zoom)) {
-              this.vault = {x: window.x, y: window.y + 70*this.zoom, direction: 'down', previous:{x:window.x, y:window.y-70*this.zoom}}
-              this.collideDuringVault = false
-              this.vaultStart = true
-            }
-            else if (this.space.isDown && this.player[this.playerId].body.y < (window.y + 110*this.zoom) && this.player[this.playerId].body.y > window.y && this.player[this.playerId].body.x < (window.x + 15*this.zoom) && this.player[this.playerId].body.x > (window.x - 65*this.zoom)) {
-              this.vault = {x: window.x, y: window.y - 70*this.zoom, direction: 'up', previous:{x:window.x, y:window.y+70*this.zoom}}
-              this.collideDuringVault = false
-              this.vaultStart = true
-            }
-          }
-        })
+          })
+        }
 
         if (this.cursors.up.isDown && !this.cursors.down.isDown) {
           this.player[this.playerId].body.setVelocityY(-survivorSpeed)
@@ -339,10 +356,10 @@ class StartScene extends Phaser.Scene {
 
         if (delta - this.player[this.playerId].damageBoostStart < 3000) {
           this.player[this.playerId].body.velocity.normalize().scale(survivorSpeed * 1.5)
-          this.playerCollisionCheck.body.velocity.normalize().scale(survivorSpeed * 1.5)
+          //this.playerCollisionCheck.body.velocity.normalize().scale(survivorSpeed * 1.5)
         } else {
           this.player[this.playerId].body.velocity.normalize().scale(survivorSpeed)
-          this.playerCollisionCheck.body.velocity.normalize().scale(survivorSpeed)
+          //this.playerCollisionCheck.body.velocity.normalize().scale(survivorSpeed)
         }
       }
 
@@ -385,7 +402,7 @@ class StartScene extends Phaser.Scene {
     Client.sendPosition(this.player[this.playerId].body.x, this.player[this.playerId].body.y)
 
 
-    let visibility = VisibilityPolygon.computeViewport([this.player[this.playerId].body.x+25*this.zoom, this.player[this.playerId].body.y+25*this.zoom], this.view, [0,0], [2400*this.zoom,2400*this.zoom])
+    let visibility = VisibilityPolygon.computeViewport([this.player[this.playerId].body.x+25*this.zoom, this.player[this.playerId].body.y+25*this.zoom], this.view, [0,0], [3200*this.zoom,3200*this.zoom])
 
 
     this.vision.clear();
