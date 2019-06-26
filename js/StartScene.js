@@ -137,6 +137,7 @@ class StartScene extends Phaser.Scene {
         }
         this.player[id].setMask(this.mask)
         this.player[id].id = id
+        this.player[id].score = 0
         this.player[id].body.collideWorldBounds = true
         this.windows[id] = this.physics.add.collider(this.player[id], this.walls, this.killMomentum, null, this)
         this.playerCollision[id] = []
@@ -165,6 +166,7 @@ class StartScene extends Phaser.Scene {
         // this.playerCollisionCheck.displayHeight = this.player[id].displayHeight + 2
         this.player[id].setMask(this.mask)
         this.player[id].id = id
+        this.player[id].score = 0
         this.player[id].body.collideWorldBounds = true
         this.windows[id] = this.physics.add.collider(this.player[id], this.walls, this.killMomentum, null, this)
         this.playerCollision[id] = []
@@ -208,6 +210,9 @@ class StartScene extends Phaser.Scene {
 
     }
 
+    this.updateScore = function(id) {
+      this.player[id].score ++
+    }
   }
 
   scoreEvent (player, gen) {
@@ -252,8 +257,9 @@ class StartScene extends Phaser.Scene {
   update(delta){
 
     if (this.playerId && this.player[this.playerId]) {
+      console.log(this.player[this.playerId].score)
 
-
+      //changes scorezone color after sitting on it for 3 seconds
       for (let player in this.player){
         if (!this.playerScoring[player]){
           this.player[player].scoreStart = false
@@ -262,15 +268,24 @@ class StartScene extends Phaser.Scene {
           if (!this.player[player].scoreStart){
             this.player[player].scoreStart = {genId: this.playerScoring[player].gen, time: delta}
           } else {
-            console.log(this.player[player].scoreStart.time - delta)
             if (delta - this.player[player].scoreStart.time > 3000) {
               this.changeGenColor(this.player[player].scoreStart.genId, true)
               this.changeGenBack[this.player[player].scoreStart.genId] = false
+              if (player === this.playerId) {
+                if (!this.scoreIncrease) {
+                  this.scoreIncrease = delta
+                } else {
+                  if (delta - this.scoreIncrease > 1000){
+                    this.scoreIncrease = delta
+                    Client.increaseScore(this.playerId)
+                  }
+                }
+              }
             }
           }
         }
       }
-
+      //changes scorezone color back to white if no one is on it
        for (let gen in this.genZone){
         if (this.changeGenBack[gen]){
           this.changeGenColor(gen, false)

@@ -72,6 +72,10 @@ io.on('connection',function(socket){
             io.to(room).emit('hitConfirm', data.id)
         })
 
+        socket.on('increaseScore', function(data){
+            io.to(room).emit('scoreIncreased', data)
+        })
+
         socket.on('itLeft', function() {
             for (let gameRoom in server.rooms) {
                 if (server.rooms[gameRoom].id === room){

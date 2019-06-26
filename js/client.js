@@ -23,6 +23,10 @@ Client.hitConfirm = function(id) {
   Client.socket.emit('playerHit', {id:id, room: Client.room.id})
 }
 
+Client.increaseScore = function(id) {
+  Client.socket.emit('increaseScore', id)
+}
+
 Client.itLeft = function() {
   Client.socket.emit('itLeft')
   StartScene2.shutDownRoom()
@@ -39,6 +43,10 @@ Client.socket.on('noRooms', function(){
 
 Client.socket.on('hitConfirm', function(data){
   StartScene2.receiveDamage(data)
+})
+
+Client.socket.on('scoreIncreased', function(data){
+  StartScene2.updateScore(data)
 })
 
 Client.socket.on('newplayer',function(data){
