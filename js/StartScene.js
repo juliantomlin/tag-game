@@ -26,8 +26,12 @@ class StartScene extends Phaser.Scene {
     //this.player = this.physics.add.sprite(50, 350, "ball").setScale(.3,.3)
     this.windows = {}
     this.playerCollision = {}
+    this.scoreZone = {}
     this.player = {}
+    this.genZone = {}
+    this.playerScoring = {}
     this.playerId =''
+    this.changeGenBack = {}
     this.itChosen = false
     this.vision = this.add.graphics(0,0)
     this.mask = this.vision.createGeometryMask()
@@ -81,8 +85,6 @@ class StartScene extends Phaser.Scene {
     this.toBuild.gens = this.toBuild.gens.concat(Generate.tile(2,2,2).gens)
     this.view = this.view.concat(Generate.tile(2,2,2).vision)
 
-    console.log(this.toBuild)
-
     this.toBuild.windows.forEach((window) => {
       this.window.create(window.x, window.y, "window").setScale(window.width, window.length).refreshBody()
     })
@@ -91,8 +93,9 @@ class StartScene extends Phaser.Scene {
       this.walls.create(wall.x, wall.y, "wall").setScale(wall.width, wall.length).refreshBody()
     })
 
-    this.toBuild.gens.forEach((gen) => {
-      this.gens.create(gen.x, gen.y, "gen").setScale(.35, .35).refreshBody()
+    this.toBuild.gens.forEach((gen, i) => {
+      this.genZone[i] = this.gens.create(gen.x, gen.y, "gen").setScale(.35, .35).refreshBody()
+      this.genZone[i].id = i
     })
 
 
@@ -126,6 +129,10 @@ class StartScene extends Phaser.Scene {
         }else{
           this.player[id] = this.players.create(x, y, "ball").setScale(.3*this.zoom,.3*this.zoom).refreshBody()
           this.player[id].it = false
+          this.scoreZone[id] = []
+          for (let gen in this.genZone){
+            this.scoreZone[id].push(this.physics.add.overlap(this.player[id], this.genZone[gen], this.scoreEvent, null, this))
+          }
           //this.player[id].setCircle((this.player[id].width/2))
         }
         this.player[id].setMask(this.mask)
@@ -147,6 +154,10 @@ class StartScene extends Phaser.Scene {
         }else{
           this.player[id] = this.physics.add.sprite(x, y, "ball").setScale(.3*this.zoom,.3*this.zoom).setBounce(.1)
           this.player[id].it = false
+          this.scoreZone[id] = []
+          for (let gen in this.genZone){
+            this.scoreZone[id].push(this.physics.add.overlap(this.player[id], this.genZone[gen], this.scoreEvent, null, this))
+          }
           //this.player[id].setCircle(this.player[id].width/2)
         }
         // this.playerCollisionCheck = this.physics.add.image(x-1,y-1)
@@ -197,7 +208,18 @@ class StartScene extends Phaser.Scene {
 
     }
 
-    console.log(this.player, this.playerId)
+  }
+
+  scoreEvent (player, gen) {
+    this.playerScoring[player.id]= {gen: gen.id}
+  }
+
+  changeGenColor (genId, change) {
+    if (change){
+      this.genZone[genId].setTintFill(0x0000ff)
+    } else {
+      this.genZone[genId].clearTint()
+    }
   }
 
   killMomentum (player1, player2) {
@@ -230,6 +252,33 @@ class StartScene extends Phaser.Scene {
   update(delta){
 
     if (this.playerId && this.player[this.playerId]) {
+
+
+      for (let player in this.player){
+        if (!this.playerScoring[player]){
+          this.player[player].scoreStart = false
+        }
+        else {
+          if (!this.player[player].scoreStart){
+            this.player[player].scoreStart = {genId: this.playerScoring[player].gen, time: delta}
+          } else {
+            console.log(this.player[player].scoreStart.time - delta)
+            if (delta - this.player[player].scoreStart.time > 3000) {
+              this.changeGenColor(this.player[player].scoreStart.genId, true)
+              this.changeGenBack[this.player[player].scoreStart.genId] = false
+            }
+          }
+        }
+      }
+
+       for (let gen in this.genZone){
+        if (this.changeGenBack[gen]){
+          this.changeGenColor(gen, false)
+        }
+        this.changeGenBack[gen] = true
+      }
+
+      this.playerScoring = {}
 
       // this.playerCollisionCheck.body.x = this.player[this.playerId].body.x - 1
       // this.playerCollisionCheck.body.y = this.player[this.playerId].body.y - 1
