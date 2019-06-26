@@ -37,6 +37,9 @@ class StartScene extends Phaser.Scene {
     this.mask = this.vision.createGeometryMask()
     this.view = [[[0,0],[4000*this.zoom,0]],[[4000*this.zoom,0],[4000*this.zoom,4000]],[[4000*this.zoom,4000*this.zoom],[0,4000*this.zoom]],[[0,4000*this.zoom],[0,0]]]
 
+    this.totalScore = 0
+    this.totalScoreDisplay = this.add.text(10, 5, '0').setScrollFactor(0)
+
     this.window = this.physics.add.staticGroup()
     this.walls = this.physics.add.staticGroup()
     this.gens = this.physics.add.staticGroup()
@@ -120,7 +123,7 @@ class StartScene extends Phaser.Scene {
       }
     }
 
-    this.addNewPlayer = function(id, x, y, user, it) {
+    this.addNewPlayer = function(id, x, y, user, it, score) {
       if (!user) {
         if (it) {
           this.player[id] = this.players.create(x, y, "it").setScale(.4*this.zoom,.4*this.zoom).refreshBody()
@@ -137,7 +140,7 @@ class StartScene extends Phaser.Scene {
         }
         this.player[id].setMask(this.mask)
         this.player[id].id = id
-        this.player[id].score = 0
+        this.player[id].score = score
         this.player[id].body.collideWorldBounds = true
         this.windows[id] = this.physics.add.collider(this.player[id], this.walls, this.killMomentum, null, this)
         this.playerCollision[id] = []
@@ -155,6 +158,7 @@ class StartScene extends Phaser.Scene {
         }else{
           this.player[id] = this.physics.add.sprite(x, y, "ball").setScale(.3*this.zoom,.3*this.zoom).setBounce(.1)
           this.player[id].it = false
+          this.player[id].scoreDisplay = this.add.text(10, 30, '0').setScrollFactor(0)
           this.scoreZone[id] = []
           for (let gen in this.genZone){
             this.scoreZone[id].push(this.physics.add.overlap(this.player[id], this.genZone[gen], this.scoreEvent, null, this))
@@ -166,7 +170,7 @@ class StartScene extends Phaser.Scene {
         // this.playerCollisionCheck.displayHeight = this.player[id].displayHeight + 2
         this.player[id].setMask(this.mask)
         this.player[id].id = id
-        this.player[id].score = 0
+        this.player[id].score = score
         this.player[id].body.collideWorldBounds = true
         this.windows[id] = this.physics.add.collider(this.player[id], this.walls, this.killMomentum, null, this)
         this.playerCollision[id] = []
@@ -175,7 +179,13 @@ class StartScene extends Phaser.Scene {
         }
         this.cameras.main.startFollow(this.player[this.playerId], true, 0.08, 0.08)
       }
+      this.totalScore = 0
+      for (var score in this.player){
+        this.totalScore += this.player[score].score
+      }
+      this.totalScoreDisplay.setText(this.totalScore)
     }
+
 
     this.movePlayer = function(id,x,y) {
       if (id != this.playerId) {
@@ -199,6 +209,8 @@ class StartScene extends Phaser.Scene {
     this.receiveDamage = function(id) {
       if (this.playerId === id) {
         this.player[id].damageBoost = true
+        this.player[id].score = 0
+        this.player[id].scoreDisplay.setText(this.player[id].score)
       }
       this.player[id].setTintFill(0xffffff)
       setTimeout(() => this.player[id].clearTint(), 150)
@@ -210,8 +222,16 @@ class StartScene extends Phaser.Scene {
 
     }
 
-    this.updateScore = function(id) {
-      this.player[id].score ++
+    this.updateScore = function(data) {
+      this.player[data.id].score = data.score
+      this.totalScore = 0
+      for (var score in this.player){
+        this.totalScore += this.player[score].score
+      }
+      this.totalScoreDisplay.setText(this.totalScore)
+      if (this.playerId === data.id){
+        this.player[data.id].scoreDisplay.setText(this.player[data.id].score)
+      }
     }
   }
 
@@ -257,7 +277,7 @@ class StartScene extends Phaser.Scene {
   update(delta){
 
     if (this.playerId && this.player[this.playerId]) {
-      console.log(this.player[this.playerId].score)
+      console.log(this.totalScore)
 
       //changes scorezone color after sitting on it for 3 seconds
       for (let player in this.player){

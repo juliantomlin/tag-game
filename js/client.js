@@ -3,6 +3,9 @@
 const Client = {}
 Client.socket = io.connect()
 
+let score = 0
+let userId = ''
+
 Client.makeNewRoom = function() {
   Client.socket.emit('newRoom')
 }
@@ -24,11 +27,13 @@ Client.hitConfirm = function(id) {
 }
 
 Client.increaseScore = function(id) {
-  Client.socket.emit('increaseScore', id)
+  score ++
+  Client.socket.emit('increaseScore', {id, score})
 }
 
 Client.itLeft = function() {
   Client.socket.emit('itLeft')
+  score = 0
   StartScene2.shutDownRoom()
 }
 
@@ -42,6 +47,9 @@ Client.socket.on('noRooms', function(){
 })
 
 Client.socket.on('hitConfirm', function(data){
+  if (userId === data){
+    score = 0
+  }
   StartScene2.receiveDamage(data)
 })
 
@@ -50,7 +58,7 @@ Client.socket.on('scoreIncreased', function(data){
 })
 
 Client.socket.on('newplayer',function(data){
-  StartScene2.addNewPlayer(data.id,data.x,data.y, false);
+  StartScene2.addNewPlayer(data.id,data.x,data.y, false, false, data.score);
 });
 
 Client.socket.on('allplayers',function(data){
@@ -59,11 +67,12 @@ Client.socket.on('allplayers',function(data){
       let it = false
       if (data.players[i].id === data.userId) {
         user = true
+        userId = data.userId
       }
       if (data.players[i].id === data.itId) {
         it = true
       }
-      StartScene2.addNewPlayer(data.players[i].id,data.players[i].x,data.players[i].y, user, it);
+      StartScene2.addNewPlayer(data.players[i].id,data.players[i].x,data.players[i].y, user, it, data.players[i].score);
     }
 
   Client.socket.on('move',function(data){

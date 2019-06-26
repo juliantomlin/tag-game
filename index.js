@@ -49,7 +49,8 @@ io.on('connection',function(socket){
             id: uuidv1(),
             x: randomInt(100,1150),
             y: randomInt(100,1150),
-            room: room
+            room: room,
+            score: 0
         };
         for (let gameRoom in server.rooms) {
             if (server.rooms[gameRoom].id === room && !server.rooms[gameRoom].it){
@@ -69,10 +70,16 @@ io.on('connection',function(socket){
         });
 
         socket.on('playerHit', function(data){
+            Object.keys(io.sockets.connected).forEach(function(socketID){
+                var player = io.sockets.connected[socketID].player;
+                if(player && player.id === data.id) io.sockets.connected[socketID].player.score = 0
+            })
             io.to(room).emit('hitConfirm', data.id)
+            io.to(room).emit('scoreIncreased', {id:data.id,score:0})
         })
 
         socket.on('increaseScore', function(data){
+            socket.player.score = data.score
             io.to(room).emit('scoreIncreased', data)
         })
 
@@ -82,6 +89,7 @@ io.on('connection',function(socket){
                     server.rooms.splice(gameRoom, 1)
                 }
             }
+            socket.player.score = 0
             socket.leave(room)
         })
 
