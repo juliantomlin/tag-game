@@ -189,16 +189,20 @@ class StartScene extends Phaser.Scene {
 
     this.movePlayer = function(id,x,y) {
       if (id != this.playerId) {
-        console.log(this.player, id)
         this.player[id].setOrigin(0,0).setPosition(x,y).refreshBody()
       }
     }
 
     this.removePlayer = function(id){
+      this.player[id].score = 0
+      this.player[id].destroy();
+      this.totalScore = 0
+      for (var score in this.player){
+        this.totalScore += this.player[score].score
+      }
+      this.totalScoreDisplay.setText(this.totalScore)
       if (this.player[id].it) {
         Client.itLeft()
-      } else {
-        this.player[id].destroy();
       }
     }
 
