@@ -19,11 +19,11 @@ Client.askNewPlayer = function(){
 };
 
 Client.sendPosition = function(x,y){
-  Client.socket.emit('move',{x:x,y:y, room: Client.room.id});
+  Client.socket.emit('move',{x,y});
 };
 
 Client.hitConfirm = function(id) {
-  Client.socket.emit('playerHit', {id:id, room: Client.room.id})
+  Client.socket.emit('playerHit', {id:id})
 }
 
 Client.increaseScore = function(id) {
@@ -34,6 +34,7 @@ Client.increaseScore = function(id) {
 Client.itLeft = function() {
   Client.socket.emit('itLeft')
   score = 0
+  Client.room = null
   StartScene2.shutDownRoom()
 }
 

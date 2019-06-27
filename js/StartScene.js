@@ -189,6 +189,7 @@ class StartScene extends Phaser.Scene {
 
     this.movePlayer = function(id,x,y) {
       if (id != this.playerId) {
+        console.log(this.player, id)
         this.player[id].setOrigin(0,0).setPosition(x,y).refreshBody()
       }
     }
@@ -202,6 +203,7 @@ class StartScene extends Phaser.Scene {
     }
 
     this.shutDownRoom = function() {
+      this.player = {}
       this.scene.stop()
       this.scene.start('MainMenu')
     }
@@ -277,7 +279,6 @@ class StartScene extends Phaser.Scene {
   update(delta){
 
     if (this.playerId && this.player[this.playerId]) {
-      console.log(this.totalScore)
 
       //changes scorezone color after sitting on it for 3 seconds
       for (let player in this.player){

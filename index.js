@@ -25,6 +25,9 @@ io.on('connection',function(socket){
     })
 
     socket.on('joinRoom', function(){
+        if (server.rooms[0] && server.rooms[0].players <= 0){
+            server.rooms.splice(0, 1)
+        }
         if (server.rooms.length === 0){
             socket.emit('noRooms')
         } else {
@@ -44,6 +47,7 @@ io.on('connection',function(socket){
     })
 
     socket.on('newplayer',function(room){
+        console.log(room)
         let it
         socket.player = {
             id: uuidv1(),
