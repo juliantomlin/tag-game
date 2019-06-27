@@ -70,12 +70,16 @@ io.on('connection',function(socket){
         });
 
         socket.on('playerHit', function(data){
+            let hurtId
             Object.keys(io.sockets.connected).forEach(function(socketID){
                 var player = io.sockets.connected[socketID].player;
-                if(player && player.id === data.id) io.sockets.connected[socketID].player.score = 0
+                if(player && player.id === data.id) {
+                    hurtId = socketID
+                    io.sockets.connected[socketID].player.score = Math.floor(io.sockets.connected[socketID].player.score / 2)
+                }
             })
             io.to(room).emit('hitConfirm', data.id)
-            io.to(room).emit('scoreIncreased', {id:data.id,score:0})
+            io.to(room).emit('scoreIncreased', {id:data.id,score:io.sockets.connected[hurtId].player.score})
         })
 
         socket.on('increaseScore', function(data){

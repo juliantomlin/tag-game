@@ -48,7 +48,7 @@ Client.socket.on('noRooms', function(){
 
 Client.socket.on('hitConfirm', function(data){
   if (userId === data){
-    score = 0
+    score = Math.floor(score / 2)
   }
   StartScene2.receiveDamage(data)
 })

@@ -209,7 +209,7 @@ class StartScene extends Phaser.Scene {
     this.receiveDamage = function(id) {
       if (this.playerId === id) {
         this.player[id].damageBoost = true
-        this.player[id].score = 0
+        this.player[id].score = Math.floor(this.player[id].score / 2)
         this.player[id].scoreDisplay.setText(this.player[id].score)
       }
       this.player[id].setTintFill(0xffffff)
