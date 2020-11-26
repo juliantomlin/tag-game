@@ -1,6 +1,7 @@
 const survivorSpeed = 250 * .66
 const fast_vault_req = 25
 const slow_vault_pen = .4
+let killerSpeed = 1.15
 
 class StartScene extends Phaser.Scene {
   constructor() {
@@ -109,10 +110,12 @@ class StartScene extends Phaser.Scene {
       right: Phaser.Input.Keyboard.KeyCodes.D,
       })
     this.space = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
+    this.shift = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT)
     this.testKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
 
     this.vault = null
     this.lundge = 0
+    this.phase = 0
     this.momentumLeft = 0
     this.momentumRight = 0
     this.damageBoost = 0
@@ -175,7 +178,7 @@ class StartScene extends Phaser.Scene {
         this.windows[id] = this.physics.add.collider(this.player[id], this.walls, this.killMomentum, null, this)
         this.playerCollision[id] = []
         for (let char in this.player) {
-          this.playerCollision[id].push(this.physics.add.collider(this.player[id], this.player[char], this.killMomentum, null, this))
+            this.playerCollision[id].push(this.physics.add.collider(this.player[id], this.player[char], this.killMomentum, null, this))
         }
         this.cameras.main.startFollow(this.player[this.playerId], true, 0.08, 0.08)
       }
@@ -460,31 +463,41 @@ class StartScene extends Phaser.Scene {
           this.lundgeStart = delta
         }
 
+        if (this.shift.isDown) {
+          this.phase = true
+        } else {
+          this.phase = false
+        }
+
         if (this.cursors.up.isDown && !this.cursors.down.isDown) {
-          this.player[this.playerId].body.setVelocityY(-survivorSpeed*1.15)
+          this.player[this.playerId].body.setVelocityY(-survivorSpeed*killerSpeed)
         }
 
         if (this.cursors.down.isDown && !this.cursors.up.isDown) {
-          this.player[this.playerId].body.setVelocityY(survivorSpeed*1.15)
+          this.player[this.playerId].body.setVelocityY(survivorSpeed*killerSpeed)
         }
 
         if (this.cursors.left.isDown && !this.cursors.right.isDown) {
-          this.player[this.playerId].body.setVelocityX(-survivorSpeed*1.15)
+          this.player[this.playerId].body.setVelocityX(-survivorSpeed*killerSpeed)
         }
 
         if (this.cursors.right.isDown && !this.cursors.left.isDown) {
-          this.player[this.playerId].body.setVelocityX(survivorSpeed*1.15)
+          this.player[this.playerId].body.setVelocityX(survivorSpeed*killerSpeed)
         }
 
+        // killer lunge
         if (this.lundge && (delta - this.lundgeStart) < 300 && !this.lundgeHit) {
           this.player[this.playerId].body.velocity.normalize().scale(survivorSpeed*1.725)
         } else if (this.lundge && (delta - this.lundgeStart < 1500)){
           this.player[this.playerId].body.velocity.normalize().scale(survivorSpeed*.3)
+        } else if (this.phase) {
+          this.player[this.playerId].body.velocity.normalize().scale(survivorSpeed*1.05)
         } else {
           this.lundge = false
           this.lundgeHit = false
           this.player[this.playerId].body.velocity.normalize().scale(survivorSpeed*1.15)
         }
+
 
       }
 
