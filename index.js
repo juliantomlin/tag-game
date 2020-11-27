@@ -17,6 +17,8 @@ server.rooms = []
 
 io.on('connection',function(socket){
 
+
+    // starts a new game as the 'killer' player
     socket.on('newRoom', function() {
         let roomInfo = {id: uuidv1(), seed: Math.round(Math.random()*1000), it: false, players: 1}
         server.rooms.push(roomInfo)
@@ -24,22 +26,27 @@ io.on('connection',function(socket){
         socket.emit('roomAssign', roomInfo)
     })
 
+    //joins a game as a 'survivor' player
     socket.on('joinRoom', function(){
         if (server.rooms[0] && server.rooms[0].players <= 0){
             server.rooms.splice(0, 1)
         }
+        //if there are no room that can be joined displays error message 'no rooms'
         if (server.rooms.length === 0){
             socket.emit('noRooms')
         } else {
+            //join the first room in list as long as that room has less than 4 players
             if (server.rooms[0] && server.rooms[0].players <= 4){
                 socket.join(server.rooms[0].id)
                 server.rooms[0].players ++
                 socket.emit('roomAssign', server.rooms[0])
+            // if the first room in list is full, join the 2nd room and remove the first room from the list
             } else if (server.rooms[1]) {
                 socket.join(server.rooms[1].id)
                 server.rooms[1].players ++
                 socket.emit('roomAssign', server.rooms[1])
                 server.rooms.shift()
+            // if the first room is full and there is no 2nd room display error message 'no rooms'
             } else {
                 socket.emit('noRooms')
             }
@@ -57,9 +64,11 @@ io.on('connection',function(socket){
             score: 0
         };
         for (let gameRoom in server.rooms) {
+            // if no one is killer, make the current player killer
             if (server.rooms[gameRoom].id === room && !server.rooms[gameRoom].it){
                 server.rooms[gameRoom].it = socket.player.id
                 it = socket.player.id
+            // if some one is killer, assign the killer id to the room id
             } else if (server.rooms[gameRoom].id === room && server.rooms[gameRoom].it){
                 it = server.rooms[gameRoom].it
             }
@@ -116,6 +125,7 @@ io.on('connection',function(socket){
 
 });
 
+//returns a list of all connect players
 function getAllPlayers(roomId){
     var players = [];
     Object.keys(io.sockets.connected).forEach(function(socketID){

@@ -42,6 +42,8 @@ class StartScene extends Phaser.Scene {
     this.totalScore = 0
     this.totalScoreDisplay = this.add.text(10, 5, '0').setScrollFactor(0)
 
+    //randomly generate the 9 map tiles
+
     this.window = this.physics.add.staticGroup()
     this.walls = this.physics.add.staticGroup()
     this.gens = this.physics.add.staticGroup()
@@ -90,20 +92,24 @@ class StartScene extends Phaser.Scene {
     this.toBuild.gens = this.toBuild.gens.concat(Generate.tile(2,2,2).gens)
     this.view = this.view.concat(Generate.tile(2,2,2).vision)
 
+
+    //adds windows to the map
     this.toBuild.windows.forEach((window) => {
       this.window.create(window.x, window.y, "window").setScale(window.width, window.length).refreshBody()
     })
 
+    //adds walls to the map
     this.toBuild.walls.forEach((wall) => {
       this.walls.create(wall.x, wall.y, "wall").setScale(wall.width, wall.length).refreshBody()
     })
 
+    //adds generators to the map
     this.toBuild.gens.forEach((gen, i) => {
       this.genZone[i] = this.gens.create(gen.x, gen.y, "gen").setScale(.35, .35).refreshBody()
       this.genZone[i].id = i
     })
 
-
+    //defines the player keys
     this.cursors = this.input.keyboard.addKeys({
       up: Phaser.Input.Keyboard.KeyCodes.W,
       down: Phaser.Input.Keyboard.KeyCodes.S,
@@ -114,6 +120,7 @@ class StartScene extends Phaser.Scene {
     this.shift = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT)
     this.testKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
 
+    //initate player movement properties
     this.vault = null
     this.lundge = 0
     this.phase = 0
@@ -127,6 +134,7 @@ class StartScene extends Phaser.Scene {
       }
     }
 
+    //id is the player id, (x,y) are the spawn coordinates, user is true if the player controlls the character, it is true if the are killer, score is the player score
     this.addNewPlayer = function(id, x, y, user, it, score) {
       if (!user) {
         if (it) {
@@ -146,13 +154,15 @@ class StartScene extends Phaser.Scene {
         this.player[id].id = id
         this.player[id].score = score
         this.player[id].body.collideWorldBounds = true
+        this.playerCollision[id] = []
         this.windows[id] = this.physics.add.collider(this.player[id], this.walls, this.killMomentum, null, this)
         for (let char in this.player) {
-          this.itCollision.push(this.physics.add.collider(this.player[id], this.player[char], this.killMomentum, null, this))
+          this.playerCollision[id].push(this.physics.add.collider(this.player[id], this.player[char], this.killMomentum, null, this))
         }
 
       }
       else {
+      //this is if the player controlls the newly created player
         this.playerId = id
         if (it) {
           this.player[id] = this.physics.add.sprite(x, y, "it").setScale(.4*this.zoom,.4*this.zoom).setBounce(.1)
@@ -176,10 +186,10 @@ class StartScene extends Phaser.Scene {
         this.player[id].score = score
         this.player[id].body.collideWorldBounds = true
         this.windows[id] = this.physics.add.collider(this.player[id], this.walls, this.killMomentum, null, this)
-        //this.playerCollision[id] = []
-        //for (let char in this.player) {
-        //    this.playerCollision[id].push(this.physics.add.collider(this.player[id], this.player[char], this.killMomentum, null, this))
-        //}
+        this.playerCollision[id] = []
+        for (let char in this.player) {
+            this.playerCollision[id].push(this.physics.add.collider(this.player[id], this.player[char], this.killMomentum, null, this))
+        }
         this.cameras.main.startFollow(this.player[this.playerId], true, 0.08, 0.08)
       }
       this.totalScore = 0
@@ -465,7 +475,7 @@ class StartScene extends Phaser.Scene {
 
         if (this.shift.isDown) {
           this.phase = true
-          console.log(this.itCollision)
+          console.log(this.playerCollision)
           this.physics.world.removeCollider(this.itCollision)
         } else {
           this.phase = false
