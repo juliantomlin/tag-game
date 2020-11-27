@@ -44,7 +44,7 @@ class StartScene extends Phaser.Scene {
     this.view = [[[0,0],[4000*this.zoom,0]],[[4000*this.zoom,0],[4000*this.zoom,4000]],[[4000*this.zoom,4000*this.zoom],[0,4000*this.zoom]],[[0,4000*this.zoom],[0,0]]]
 
     this.totalScore = 0
-    this.totalScoreDisplay = this.add.text(10, 5, '0').setScrollFactor(0)
+    this.totalScoreDisplay = this.add.text(10, 5, '0').setScrollFactor(0).setDepth(1)
 
     //randomly generate the 9 map tiles
 
@@ -152,6 +152,8 @@ class StartScene extends Phaser.Scene {
         if (it) {
           this.player[id] = this.players.create(x, y, "it").setScale(.4*this.zoom,.4*this.zoom).refreshBody()
           this.player[id].it = true
+          this.itX = x
+          this.itY = y
           //this.player[id].setCircle((this.player[id].width/2))
         }else{
           this.player[id] = this.players.create(x, y, "ball").setScale(.3*this.zoom,.3*this.zoom).refreshBody()
@@ -183,7 +185,7 @@ class StartScene extends Phaser.Scene {
         }else{
           this.player[id] = this.physics.add.sprite(x, y, "ball").setScale(.3*this.zoom,.3*this.zoom).setBounce(.1)
           this.player[id].it = false
-          this.player[id].scoreDisplay = this.add.text(10, 30, '0').setScrollFactor(0)
+          this.player[id].scoreDisplay = this.add.text(10, 30, '0').setScrollFactor(0).setDepth(1)
           this.scoreZone[id] = []
           for (let gen in this.genZone){
             this.scoreZone[id].push(this.physics.add.overlap(this.player[id], this.genZone[gen], this.scoreEvent, null, this))
@@ -292,7 +294,7 @@ class StartScene extends Phaser.Scene {
         this.terror.setTexture('terror3')
       } else if (this.itDistance < 300) {
         this.terror.setTexture('terror2')
-      } else if (this.itDistance < 500) {
+      } else if (this.itDistance < 600) {
         this.terror.visible = true
         this.terror.setTexture('terror1')
       } else {
@@ -518,7 +520,6 @@ class StartScene extends Phaser.Scene {
             this.physics.world.removeCollider(this.playerCollision[this.playerId][player])
           }
         } else if (!this.shift.isDown && this.phase){
-          console.log(this.playerCollision[this.playerId])
           this.playerCollision[this.playerId] = []
           for (let player in this.player) {
             this.playerCollision[this.playerId].push(this.physics.add.collider(this.player[this.playerId], this.player[player], this.killMomentum, null, this))
@@ -563,7 +564,6 @@ class StartScene extends Phaser.Scene {
 
     if (!this.player[this.playerId].it) {
       this.itDistance = Math.sqrt((this.player[this.playerId].body.x - this.itX) * (this.player[this.playerId].body.x - this.itX) + (this.player[this.playerId].body.y - this.itY) * (this.player[this.playerId].body.y - this.itY))
-      console.log(this.itDistance)
     }
 
 
@@ -585,4 +585,3 @@ class StartScene extends Phaser.Scene {
   }
 }
 const StartScene2 = new StartScene()
-console.log(new StartScene())
