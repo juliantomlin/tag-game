@@ -285,6 +285,20 @@ class StartScene extends Phaser.Scene {
 
   updateTerror () {
     this.terror.setPosition(this.player[this.playerId].body.x+20, this.player[this.playerId].body.y+20).refreshBody()
+    if (this.player[this.playerId].it) {
+      this.terror.visible = false
+    } else{
+      if (this.itDistance < 100) {
+        this.terror.setTexture('terror3')
+      } else if (this.itDistance < 300) {
+        this.terror.setTexture('terror2')
+      } else if (this.itDistance < 500) {
+        this.terror.visible = true
+        this.terror.setTexture('terror1')
+      } else {
+        this.terror.visible = false
+      }
+    }
   }
 
   killMomentum (player1, player2) {
