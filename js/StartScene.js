@@ -15,6 +15,9 @@ class StartScene extends Phaser.Scene {
     this.load.image("wall", "assets/wall_tile.svg")
     this.load.image("window", "assets/window.svg")
     this.load.image("gen", "assets/gen.svg")
+    this.load.image("terror1", "assets/terror1.png")
+    this.load.image("terror2", "assets/terror2.png")
+    this.load.image("terror3", "assets/terror3.png")
   }
 
   create() {
@@ -23,6 +26,7 @@ class StartScene extends Phaser.Scene {
     this.background = this.add.tileSprite(0,0,3200*this.zoom,3200*this.zoom, 'ground').setOrigin(0, 0)
     this.cameras.main.setBounds(-500, -500, 3200, 3200)
     this.physics.world.setBounds(0, 0, 3200*this.zoom, 3200*this.zoom)
+
 
     //this.player = this.physics.add.sprite(50, 350, "ball").setScale(.3,.3)
     this.windows = {}
@@ -48,6 +52,7 @@ class StartScene extends Phaser.Scene {
     this.walls = this.physics.add.staticGroup()
     this.gens = this.physics.add.staticGroup()
     this.players = this.physics.add.staticGroup()
+    this.terrorR = this.physics.add.staticGroup()
 
     this.toBuild = Generate.tile(0,0,5)
     this.view = this.view.concat(Generate.tile(0,0,5).vision)
@@ -127,7 +132,9 @@ class StartScene extends Phaser.Scene {
     this.momentumLeft = 0
     this.momentumRight = 0
     this.damageBoost = 0
-    this.itDistance = 100
+    this.itDistance = 1000
+    this.itY = 0
+    this.itX = 0
 
     if (this.player) {
       for (const existingPlayer in this.player) {
@@ -186,6 +193,7 @@ class StartScene extends Phaser.Scene {
         // this.playerCollisionCheck = this.physics.add.image(x-1,y-1)
         // this.playerCollisionCheck.displayWidth = this.player[id].displayWidth + 2
         // this.playerCollisionCheck.displayHeight = this.player[id].displayHeight + 2
+        this.terror = this.terrorR.create(x,y,'terror1').setScale(1.75,1.75)
         this.player[id].setMask(this.mask)
         this.player[id].id = id
         this.player[id].score = score
@@ -209,8 +217,8 @@ class StartScene extends Phaser.Scene {
       if (id != this.playerId) {
         this.player[id].setOrigin(0,0).setPosition(x,y).refreshBody()
         if (this.player[id].it) {
-          this.itDistance = Math.sqrt((this.player[this.playerId].body.x - x) * (this.player[this.playerId].body.x - x) + (this.player[this.playerId].body.y - y) * (this.player[this.playerId].body.y - y))
-          console.log(this.itDistance)
+          this.itX = x
+          this.itY = y
         }
       }
     }
@@ -275,6 +283,10 @@ class StartScene extends Phaser.Scene {
     }
   }
 
+  updateTerror () {
+    this.terror.setPosition(this.player[this.playerId].body.x+20, this.player[this.playerId].body.y+20).refreshBody()
+  }
+
   killMomentum (player1, player2) {
 
 
@@ -300,6 +312,7 @@ class StartScene extends Phaser.Scene {
       }
     }
   }
+
 
 
   update(delta){
@@ -531,8 +544,13 @@ class StartScene extends Phaser.Scene {
 
 
       }
-
+    this.updateTerror()
     Client.sendPosition(this.player[this.playerId].body.x, this.player[this.playerId].body.y)
+
+    if (!this.player[this.playerId].it) {
+      this.itDistance = Math.sqrt((this.player[this.playerId].body.x - this.itX) * (this.player[this.playerId].body.x - this.itX) + (this.player[this.playerId].body.y - this.itY) * (this.player[this.playerId].body.y - this.itY))
+      console.log(this.itDistance)
+    }
 
 
     let visibility = VisibilityPolygon.computeViewport([this.player[this.playerId].body.x+25*this.zoom, this.player[this.playerId].body.y+25*this.zoom], this.view, [0,0], [3200*this.zoom,3200*this.zoom])
