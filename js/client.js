@@ -68,12 +68,12 @@ Client.socket.on('allplayers',function(data){
       let it = false
       if (data.players[i].id === data.userId) {
         user = true
-        userId = data.userId
+        //userId = data.userId
       }
       if (data.players[i].id === data.itId) {
         it = true
       }
-      StartScene2.addNewPlayer(data.players[i].id,data.players[i].x,data.players[i].y, user, it, data.players[i].score);
+      StartScene2.addNewPlayer(data.players[i].id,data.players[i].x,data.players[i].y, user, it, data.players[i].score, data.userId);
     }
 
   Client.socket.on('move',function(data){

@@ -135,7 +135,11 @@ class StartScene extends Phaser.Scene {
     }
 
     //id is the player id, (x,y) are the spawn coordinates, user is true if the player controlls the character, it is true if the are killer, score is the player score
-    this.addNewPlayer = function(id, x, y, user, it, score) {
+    this.addNewPlayer = function(id, x, y, user, it, score, userId) {
+      if (!this.playerId) {
+        this.playerId = userId
+        this.playerCollision[userId] = []
+      }
       if (!user) {
         if (it) {
           this.player[id] = this.players.create(x, y, "it").setScale(.4*this.zoom,.4*this.zoom).refreshBody()
@@ -154,16 +158,16 @@ class StartScene extends Phaser.Scene {
         this.player[id].id = id
         this.player[id].score = score
         this.player[id].body.collideWorldBounds = true
-        this.playerCollision[id] = []
+        // ! this.playerCollision[id] = []
         this.windows[id] = this.physics.add.collider(this.player[id], this.walls, this.killMomentum, null, this)
         for (let char in this.player) {
-          this.playerCollision[id].push(this.physics.add.collider(this.player[id], this.player[char], this.killMomentum, null, this))
+          this.playerCollision[this.playerId].push(this.physics.add.collider(this.player[id], this.player[char], this.killMomentum, null, this))
         }
 
       }
       else {
       //this is if the player controlls the newly created player
-        this.playerId = id
+        // ! this.playerId = id
         if (it) {
           this.player[id] = this.physics.add.sprite(x, y, "it").setScale(.4*this.zoom,.4*this.zoom).setBounce(.1)
           this.player[id].it = true
@@ -186,7 +190,7 @@ class StartScene extends Phaser.Scene {
         this.player[id].score = score
         this.player[id].body.collideWorldBounds = true
         this.windows[id] = this.physics.add.collider(this.player[id], this.walls, this.killMomentum, null, this)
-        this.playerCollision[id] = []
+        // !this.playerCollision[id] = []
         for (let char in this.player) {
             this.playerCollision[id].push(this.physics.add.collider(this.player[id], this.player[char], this.killMomentum, null, this))
         }
@@ -475,8 +479,9 @@ class StartScene extends Phaser.Scene {
 
         if (this.shift.isDown) {
           this.phase = true
-          console.log(this.playerCollision)
-          this.physics.world.removeCollider(this.itCollision)
+          for (let player in this.playerCollision[this.playerId]) {
+            this.physics.world.removeCollider(this.playerCollision[this.playerId][player])
+          }
         } else {
           this.phase = false
         }
