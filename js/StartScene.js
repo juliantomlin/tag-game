@@ -472,18 +472,27 @@ class StartScene extends Phaser.Scene {
       // killer controlls
       if (this.player[this.playerId].it) {
 
+
+// lunge attack
         if (this.space.isDown && !this.lundge) {
           this.lundge = true
           this.lundgeStart = delta
         }
 
+// phase mode
         if (this.shift.isDown) {
           this.phase = true
           for (let player in this.playerCollision[this.playerId]) {
             this.physics.world.removeCollider(this.playerCollision[this.playerId][player])
           }
-        } else {
+        } else if (!this.shift.isDown && this.phase){
+          console.log(this.playerCollision[this.playerId])
+          this.playerCollision[this.playerId] = []
+          for (let player in this.player) {
+            this.playerCollision[this.playerId].push(this.physics.add.collider(this.player[this.playerId], this.player[player], this.killMomentum, null, this))
+          }
           this.phase = false
+
         }
 
         if (this.cursors.up.isDown && !this.cursors.down.isDown) {
@@ -508,7 +517,7 @@ class StartScene extends Phaser.Scene {
         } else if (this.lundge && (delta - this.lundgeStart < 1500)){
           this.player[this.playerId].body.velocity.normalize().scale(survivorSpeed*.3)
         } else if (this.phase) {
-          this.player[this.playerId].body.velocity.normalize().scale(survivorSpeed*1.05)
+          this.player[this.playerId].body.velocity.normalize().scale(survivorSpeed*.75)
         } else {
           this.lundge = false
           this.lundgeHit = false
