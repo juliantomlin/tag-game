@@ -27,6 +27,7 @@ class StartScene extends Phaser.Scene {
     //this.player = this.physics.add.sprite(50, 350, "ball").setScale(.3,.3)
     this.windows = {}
     this.playerCollision = {}
+    this.itCollision = []
     this.scoreZone = {}
     this.player = {}
     this.genZone = {}
@@ -146,9 +147,8 @@ class StartScene extends Phaser.Scene {
         this.player[id].score = score
         this.player[id].body.collideWorldBounds = true
         this.windows[id] = this.physics.add.collider(this.player[id], this.walls, this.killMomentum, null, this)
-        this.playerCollision[id] = []
         for (let char in this.player) {
-          this.playerCollision[id].push(this.physics.add.collider(this.player[id], this.player[char], this.killMomentum, null, this))
+          this.itCollision.push(this.physics.add.collider(this.player[id], this.player[char], this.killMomentum, null, this))
         }
 
       }
@@ -176,10 +176,10 @@ class StartScene extends Phaser.Scene {
         this.player[id].score = score
         this.player[id].body.collideWorldBounds = true
         this.windows[id] = this.physics.add.collider(this.player[id], this.walls, this.killMomentum, null, this)
-        this.playerCollision[id] = []
-        for (let char in this.player) {
-            this.playerCollision[id].push(this.physics.add.collider(this.player[id], this.player[char], this.killMomentum, null, this))
-        }
+        //this.playerCollision[id] = []
+        //for (let char in this.player) {
+        //    this.playerCollision[id].push(this.physics.add.collider(this.player[id], this.player[char], this.killMomentum, null, this))
+        //}
         this.cameras.main.startFollow(this.player[this.playerId], true, 0.08, 0.08)
       }
       this.totalScore = 0
@@ -465,6 +465,8 @@ class StartScene extends Phaser.Scene {
 
         if (this.shift.isDown) {
           this.phase = true
+          console.log(this.itCollision)
+          this.physics.world.removeCollider(this.itCollision)
         } else {
           this.phase = false
         }
