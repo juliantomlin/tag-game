@@ -127,6 +127,7 @@ class StartScene extends Phaser.Scene {
     this.momentumLeft = 0
     this.momentumRight = 0
     this.damageBoost = 0
+    this.itDistance = 100
 
     if (this.player) {
       for (const existingPlayer in this.player) {
@@ -207,6 +208,10 @@ class StartScene extends Phaser.Scene {
     this.movePlayer = function(id,x,y) {
       if (id != this.playerId) {
         this.player[id].setOrigin(0,0).setPosition(x,y).refreshBody()
+        if (this.player[id].it) {
+          this.itDistance = Math.sqrt((this.player[this.playerId].body.x - x) * (this.player[this.playerId].body.x - x) + (this.player[this.playerId].body.y - y) * (this.player[this.playerId].body.y - y))
+          console.log(this.itDistance)
+        }
       }
     }
 
