@@ -16,9 +16,6 @@ Generate.tile = function (tileX, tileY) {
   let tileId
   let seedRandomTile = Client.room.seed * prime[tileX][tileY]
 
-  console.log(seedRandomTile)
-  console.log(seedRandomTile % 100)
-
   if ((seedRandomTile % 100) <= 19) {
     tileId = 1
   } else if ((seedRandomTile % 100) <= 39) {
