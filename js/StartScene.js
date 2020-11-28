@@ -9,15 +9,15 @@ class StartScene extends Phaser.Scene {
   }
 
   preload(){
-    this.load.image("ground", "/assets/ground.png")
-    this.load.image("ball", "/assets/ball.svg")
-    this.load.image("it", "/assets/it.svg")
-    this.load.image("wall", "/assets/wall_tile.svg")
-    this.load.image("window", "/assets/window.svg")
-    this.load.image("gen", "/assets/gen.svg")
-    this.load.image("terror1", "/assets/terror1.png")
-    this.load.image("terror2", "/assets/terror2.png")
-    this.load.image("terror3", "/assets/terror3.png")
+    this.load.image("ground", "assets/ground.png")
+    this.load.image("ball", "assets/ball.svg")
+    this.load.image("it", "assets/it.svg")
+    this.load.image("wall", "assets/wall_tile.svg")
+    this.load.image("window", "assets/window.svg")
+    this.load.image("gen", "assets/gen.svg")
+    this.load.image("terror1", "assets/terror1.png")
+    this.load.image("terror2", "assets/terror2.png")
+    this.load.image("terror3", "assets/terror3.png")
   }
 
   create() {
