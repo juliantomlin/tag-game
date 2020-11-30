@@ -31,6 +31,11 @@ Client.increaseScore = function(id) {
   Client.socket.emit('increaseScore', {id, score})
 }
 
+Client.setScore = function(id, newScore){
+  score = newScore
+  Client.socket.emit('increaseScore', {id, score})
+}
+
 Client.itLeft = function() {
   Client.socket.emit('itLeft')
   score = 0

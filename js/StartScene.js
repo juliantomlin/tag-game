@@ -249,6 +249,7 @@ class StartScene extends Phaser.Scene {
         this.player[id].damageBoost = true
         this.player[id].score = Math.floor(this.player[id].score / 2)
         this.player[id].scoreDisplay.setText(this.player[id].score)
+        Client.setScore(id, this.player[id].score)
       }
       this.player[id].setTintFill(0xffffff)
       setTimeout(() => this.player[id].clearTint(), 150)
