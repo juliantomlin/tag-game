@@ -260,12 +260,23 @@ class StartScene extends Phaser.Scene {
         this.player[id].scoreDisplay.setText(this.player[id].score)
         Client.setScore(id, this.player[id].score)
       }
-      this.player[id].setTintFill(0xffffff)
-      setTimeout(() => this.player[id].clearTint(), 150)
-      setTimeout(() => this.player[id].setTintFill(0xffffff), 300)
-      setTimeout(() => this.player[id].clearTint(), 450)
-      setTimeout(() => this.player[id].setTintFill(0xffffff), 600)
-      setTimeout(() => this.player[id].clearTint(), 900)
+
+
+      if (this.player[id].score === 0) {
+        this.player[id].setTintFill(0xffffff)
+        setTimeout(() => this.player[id].clearTint(), 150)
+        setTimeout(() => this.player[id].setTintFill(0xffffff), 300)
+        setTimeout(() => this.player[id].clearTint(), 450)
+        setTimeout(() => this.player[id].setTintFill(0xffffff), 600)
+        setTimeout(() => this.player[id].setTintFill(0xa1a1a1),900)
+      } else {
+        this.player[id].setTintFill(0xffffff)
+        setTimeout(() => this.player[id].clearTint(), 150)
+        setTimeout(() => this.player[id].setTintFill(0xffffff), 300)
+        setTimeout(() => this.player[id].clearTint(), 450)
+        setTimeout(() => this.player[id].setTintFill(0xffffff), 600)
+        setTimeout(() => this.player[id].clearTint(), 900)
+      }
 
 
     }
