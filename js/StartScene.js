@@ -255,7 +255,6 @@ class StartScene extends Phaser.Scene {
           this.player[id].damageBoost = true
         } else {
           this.player[id].score = 0
-          this.player[id].limping = true
         }
         this.player[id].scoreDisplay.setText(this.player[id].score)
         Client.setScore(id, this.player[id].score)
@@ -263,6 +262,7 @@ class StartScene extends Phaser.Scene {
 
 
       if (this.player[id].score === 0) {
+        this.player[id].limping = true
         this.player[id].setTintFill(0xffffff)
         setTimeout(() => this.player[id].clearTint(), 150)
         setTimeout(() => this.player[id].setTintFill(0xffffff), 300)
@@ -290,6 +290,12 @@ class StartScene extends Phaser.Scene {
       this.totalScoreDisplay.setText(this.totalScore)
       if (this.playerId === data.id){
         this.player[data.id].scoreDisplay.setText(this.player[data.id].score)
+      }
+  //stop limping if score reaches 9
+      if (this.player[data.id].limping && this.player[data.id].score > 8){
+        console.log(data.id)
+        this.player[data.id].limping = false
+        this.player[data.id].clearTint()
       }
     }
   }
