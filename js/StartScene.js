@@ -246,13 +246,16 @@ class StartScene extends Phaser.Scene {
 
     this.receiveDamage = function(id) {
       if (this.playerId === id) {
-        this.player[id].damageBoost = true
+    // minimum score loss is 10. if the survivor has less than 10 score is set to 0
         if (this.player[id].score > 20) {
           this.player[id].score = Math.floor(this.player[id].score / 2)
+          this.player[id].damageBoost = true
         } else if (this.player[id].score > 10){
           this.player[id].score = this.player[id].score - 10
+          this.player[id].damageBoost = true
         } else {
           this.player[id].score = 0
+          this.player[id].limping = true
         }
         this.player[id].scoreDisplay.setText(this.player[id].score)
         Client.setScore(id, this.player[id].score)
@@ -507,6 +510,10 @@ class StartScene extends Phaser.Scene {
         } else {
           this.player[this.playerId].body.velocity.normalize().scale(survivorSpeed)
           //this.playerCollisionCheck.body.velocity.normalize().scale(survivorSpeed)
+        }
+
+        if (this.player[this.playerId].limping){
+          this.player[this.playerId].body.velocity.normalize().scale(survivorSpeed * .3)
         }
       }
 
