@@ -245,17 +245,18 @@ class StartScene extends Phaser.Scene {
     }
 
     this.receiveDamage = function(id) {
-      if (this.playerId === id) {
+
     // minimum score loss is 10. if the survivor has less than 10 score is set to 0
-        if (this.player[id].score > 20) {
-          this.player[id].score = Math.floor(this.player[id].score / 2)
-          this.player[id].damageBoost = true
-        } else if (this.player[id].score > 10){
-          this.player[id].score = this.player[id].score - 10
-          this.player[id].damageBoost = true
-        } else {
-          this.player[id].score = 0
-        }
+      if (this.player[id].score > 20) {
+        this.player[id].score = Math.floor(this.player[id].score / 2)
+        this.player[id].damageBoost = true
+      } else if (this.player[id].score > 10){
+        this.player[id].score = this.player[id].score - 10
+        this.player[id].damageBoost = true
+      } else {
+        this.player[id].score = 0
+      }
+      if (this.playerId === id) {
         this.player[id].scoreDisplay.setText(this.player[id].score)
         Client.setScore(id, this.player[id].score)
       }
