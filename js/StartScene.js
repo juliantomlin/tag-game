@@ -264,6 +264,14 @@ class StartScene extends Phaser.Scene {
 
       if (this.player[id].score === 0) {
         this.player[id].limping = true
+// if the player is killer, remove collision from the limping player
+        if (this.player[this.playerId].it){
+          for (let player in this.playerCollision[this.playerId]) {
+            if (this.playerCollision[this.playerId][player].object1.id === id || this.playerCollision[this.playerId][player].object2.id === id) {
+              this.physics.world.removeCollider(this.playerCollision[this.playerId][player])
+            }
+          }
+        }
         this.player[id].setTintFill(0xffffff)
         setTimeout(() => this.player[id].clearTint(), 150)
         setTimeout(() => this.player[id].setTintFill(0xffffff), 300)
@@ -278,8 +286,6 @@ class StartScene extends Phaser.Scene {
         setTimeout(() => this.player[id].setTintFill(0xffffff), 600)
         setTimeout(() => this.player[id].clearTint(), 900)
       }
-
-
     }
 
     this.updateScore = function(data) {
@@ -294,9 +300,16 @@ class StartScene extends Phaser.Scene {
       }
   //stop limping if score reaches 9
       if (this.player[data.id].limping && this.player[data.id].score > 8){
-        console.log(data.id)
         this.player[data.id].limping = false
         this.player[data.id].clearTint()
+    //restore collision to the limping player if current player is killer
+        if (this.player[this.playerId].it){
+          for (let player in this.player) {
+            if (player === data.id){
+              this.playerCollision[this.playerId].push(this.physics.add.collider(this.player[this.playerId], this.player[player], this.killMomentum, null, this))
+            }
+          }
+        }
       }
     }
   }
@@ -546,7 +559,7 @@ class StartScene extends Phaser.Scene {
         }
 
 // phase mode
-        if (this.shift.isDown) {
+        if (this.shift.isDown && !this.phase) {
           this.phase = true
           for (let player in this.playerCollision[this.playerId]) {
             this.physics.world.removeCollider(this.playerCollision[this.playerId][player])
